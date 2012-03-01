@@ -1,8 +1,10 @@
 package researchSupport;
 
+import java.io.IOException;
+import java.util.HashSet;
 import java.util.Scanner;
 import java.util.Set;
-import java.io.*;
+import java.util.Stack;
 
 /**
  * Displays the text based interface to the ResearchSupportApplication. Gets the
@@ -161,6 +163,14 @@ public class ResearchSupportTextInterface {
 	public void print(Set<Paper> references) {
 		for (Paper p : references) {
 			System.out.println(p.toString());
+		}
+	}
+
+	public void print(HashSet<Stack<Paper>> chains) {
+		for (Stack<Paper> s : chains) {
+			for (int i = 0; i < s.size(); i++) {
+				System.out.print(s.pop().getTitle() + " -> ");
+			}
 		}
 	}
 }

@@ -1,6 +1,6 @@
 package researchSupport;
 
-public class Reference {
+public class Reference extends Edge {
 
 	private Paper referee;
 

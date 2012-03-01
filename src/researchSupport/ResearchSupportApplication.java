@@ -1,8 +1,9 @@
 package researchSupport;
 
-import java.io.*;
+import java.io.IOException;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.Stack;
 
 /**
  * 
@@ -34,7 +35,7 @@ public class ResearchSupportApplication {
 				break;
 			}
 			case 2: {
-				makeLinkToReference(rsti.getPaperTitle(), rsti.getRefTitle());
+				makeLinkToReference(rsti.getRefTitle(), rsti.getPaperTitle());
 				break;
 			}
 			case 3: {
@@ -87,11 +88,11 @@ public class ResearchSupportApplication {
 	 * laziness. In practice this is VERY inefficient, as the entire set of
 	 * papers is searched twice more than it needs to be.
 	 * 
-	 * @param referee
 	 * @param referrer
+	 * @param referee
 	 */
-	public void makeLinkToReference(String referee, String referrer) {
-		if (pm.makeReference(referee, referrer)) {
+	public void makeLinkToReference(String referrer, String referee) {
+		if (pm.makeReference(referrer, referee)) {
 			rsti.print(pm.getPaper(referrer).getTitle() + " -> "
 					+ pm.getPaper(referee).getTitle() + " reference added");
 		} else {
@@ -112,10 +113,23 @@ public class ResearchSupportApplication {
 		}
 	}
 
+	/**
+	 * 
+	 * @param title
+	 */
 	public void listDirectCitations(String title) {
-		pm.getDirectCitations(title);
+		Set<Paper> citations = pm.getDirectCitations(title);
+		if (citations.isEmpty()) {
+			rsti.print("No citations found for " + title);
+		} else {
+			rsti.print(citations);
+		}
 	}
 
+	/**
+	 * 
+	 * @param title
+	 */
 	public void listDirectReferences(String title) {
 		Set<Paper> references = pm.getDirectReferences(title);
 		if (references.isEmpty()) {
@@ -126,7 +140,12 @@ public class ResearchSupportApplication {
 	}
 
 	public void listAllCitationChains(String title) {
-		pm.getAllCitationChains(title);
+		HashSet<Stack<Paper>> chains = pm.getAllCitationChains(title);
+		if (chains == null || chains.isEmpty()) {
+			rsti.print("No citations found for " + title);
+		} else {
+			rsti.print(chains);
+		}
 	}
 
 	public void listAllReferenceChains(String title) {
