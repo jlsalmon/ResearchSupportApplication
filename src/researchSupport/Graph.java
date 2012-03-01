@@ -1,7 +1,7 @@
 package researchSupport;
 
-import java.util.*;
-import java.util.Map.Entry;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * 
@@ -15,6 +15,8 @@ public class Graph<V extends Vertex, E> {
 	Map<String, V> vertices;
 	int numEdges;
 
+	public static final int SEARCH_CITATIONS = 0;
+	public static final int SEARCH_REFERENCES = 1;
 	public static final int NO_LIMIT = -1;
 
 	/**

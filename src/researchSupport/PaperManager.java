@@ -3,7 +3,6 @@ package researchSupport;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.Stack;
-import java.util.Map.Entry;
 
 /**
  * 
@@ -87,17 +86,24 @@ public class PaperManager {
 		return references;
 	}
 
-	public HashSet<Stack<Paper>> getAllCitationChains(String title) {
+	public Queue getAllCitationChains(String title) {
 		if (!this.papers.containsVertex(title)) {
 			System.out.println("Paper " + title + " not found.");
 			return null;
 		} else {
-			return this.getPaths(getPaper(title).getTitle(), Graph.NO_LIMIT);
+			return this.getPaths(getPaper(title).getTitle(),
+					Graph.SEARCH_CITATIONS, Graph.NO_LIMIT);
 		}
 	}
 
-	public void getAllReferenceChains(String title) {
-		// TODO Auto-generated method stub
+	public Queue getAllReferenceChains(String title) {
+		if (!this.papers.containsVertex(title)) {
+			System.out.println("Paper " + title + " not found.");
+			return null;
+		} else {
+			return this.getPaths(getPaper(title).getTitle(),
+					Graph.SEARCH_REFERENCES, Graph.NO_LIMIT);
+		}
 	}
 
 	public void getNCitations(String title, int n) {
@@ -116,57 +122,64 @@ public class PaperManager {
 	 * @param limit
 	 * @return
 	 */
-	public HashSet<Stack<Paper>> getPaths(String title, int limit) {
+	public Queue getPaths(String title, int method, int limit) {
 
 		papers.resetVisitedState();
-		HashSet<Stack<Paper>> chains = new HashSet<Stack<Paper>>();
 
-		chains.add(getPath(title, new Stack<Paper>(), limit));
+		Paper front = getPaper(title);
+		front.setVisited(true);
+		Paper next;
 
-		return chains;
-	}
+		Queue traversalOrder = new Queue();
+		Queue vertexQueue = new Queue();
 
-	/**
-	 * 
-	 * @param key
-	 * @param limit
-	 * @return
-	 */
-	private Stack<Paper> getPath(String key, Stack<Paper> chain, int limit) {
-		
-		Paper current = getPaper(key);
-		Paper next = getUncheckedCitation(current);
-		
-		/*
-		 * if current is visited return null
-		 * 
-		 * else if current has no neighbours, add to stack and return it
-		 * 
-		 * else if limit == 0 return null
-		 * 
-		 * else add current to stack, and
-		 * getPath(current.getUnvisitedNeighbour().getTitle(), limit -1)
-		 */
+		traversalOrder.joinBack(front.getTitle());
+		vertexQueue.joinBack(front);
 
-		if (current.isVisited()) {
-			return null;
-		} else if (next == null) {
-			chain.add(current);
-		} else if (limit != 0) {
-			chain.add(current);
-			current.setVisited(true);
-			
-			for (Citation c : current.getCitations()) {
-				getPath(c.getSource().getTitle(), chain, --limit);
+		while (!vertexQueue.isEmpty()) {
+			front = (Paper) vertexQueue.leaveFront();
+
+			if (method == Graph.SEARCH_CITATIONS) {
+				next = getUncheckedCitation(front);
+			} else {
+				next = getUncheckedReference(front);
+			}
+
+			while (next != null) {
+				next.setVisited(true);
+				traversalOrder.joinBack(next.getTitle());
+				vertexQueue.joinBack(next);
+
+				if (method == Graph.SEARCH_CITATIONS) {
+					next = getUncheckedCitation(front);
+				} else {
+					next = getUncheckedReference(front);
+				}
 			}
 		}
 
-		return chain;
+		return traversalOrder;
 	}
 
 	/**
 	 * 
-	 * @param key
+	 * @param p
+	 * @return
+	 */
+	private Paper getUncheckedReference(Paper p) {
+		for (Reference r : p.getReferences()) {
+			if (r.getReferee().isVisited()) {
+				return null;
+			} else {
+				return r.getReferee();
+			}
+		}
+		return null;
+	}
+
+	/**
+	 * 
+	 * @param p
 	 * @return
 	 */
 	private Paper getUncheckedCitation(Paper p) {

@@ -140,8 +140,8 @@ public class ResearchSupportApplication {
 	}
 
 	public void listAllCitationChains(String title) {
-		HashSet<Stack<Paper>> chains = pm.getAllCitationChains(title);
-		if (chains == null || chains.isEmpty()) {
+		Queue chains = pm.getAllCitationChains(title);
+		if (pm.getDirectCitations(title).isEmpty() || chains.isEmpty()) {
 			rsti.print("No citations found for " + title);
 		} else {
 			rsti.print(chains);
@@ -149,7 +149,12 @@ public class ResearchSupportApplication {
 	}
 
 	public void listAllReferenceChains(String title) {
-		pm.getAllReferenceChains(title);
+		Queue chains = pm.getAllReferenceChains(title);
+		if (pm.getDirectReferences(title).isEmpty() || chains.isEmpty()) {
+			rsti.print("No references found for " + title);
+		} else {
+			rsti.print(chains);
+		}
 	}
 
 	public void listNCitations(String title, int n) {
