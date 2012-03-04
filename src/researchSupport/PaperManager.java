@@ -9,7 +9,6 @@ import java.util.Stack;
  * @author jussy
  * 
  */
-
 public class PaperManager {
 
 	Graph<Paper> papers;
@@ -184,15 +183,16 @@ public class PaperManager {
 		}
 	}
 
+	// TODO refactor these!!
+	HashSet<Stack<Paper>> chains = new HashSet<Stack<Paper>>();
+	Stack<Paper> chain = new Stack<Paper>();
+
 	/**
 	 * 
 	 * @param title
 	 * @param limit
 	 * @return
 	 */
-	HashSet<Stack<Paper>> chains = new HashSet<Stack<Paper>>();
-	Stack<Paper> chain = new Stack<Paper>();
-
 	public HashSet<Stack<Paper>> getPaths(String title, int method, int limit) {
 		papers.resetVisitedState();
 		Paper front = getPaper(title);
@@ -204,6 +204,7 @@ public class PaperManager {
 	}
 
 	/**
+	 * TODO refactor this into DepthFirstSearch class
 	 * 
 	 * @param origin
 	 * @param front
@@ -236,7 +237,9 @@ public class PaperManager {
 				if (!chain.contains(front))
 					chain.add(front);
 
-				dfs(origin, children.get(i), method, limit, goal);
+				if (!dfs(origin, children.get(i), method, limit, goal))
+					return false;
+
 				chain = new Stack<Paper>();
 
 				if (!chain.contains(origin))
@@ -247,6 +250,7 @@ public class PaperManager {
 	}
 
 	/**
+	 * TODO refactor this to getUnvisitedChildren() inside Graph
 	 * 
 	 * @param p
 	 * @return
@@ -262,6 +266,7 @@ public class PaperManager {
 	}
 
 	/**
+	 * TODO refactor this to getUnvisitedChildren() inside Graph
 	 * 
 	 * @param p
 	 * @return

@@ -1,22 +1,20 @@
 package researchSupport;
 
 public class Citation extends Edge {
-	
-	private Paper source;
 
 	/**
 	 * 
 	 * @param source
 	 */
 	public Citation(Paper source) {
-		this.source = source;
+		this.endpoint = source;
 	}
 
 	/**
 	 * @return the source
 	 */
 	public Paper getSource() {
-		return source;
+		return (Paper) this.endpoint;
 	}
 
 	/**
@@ -24,6 +22,6 @@ public class Citation extends Edge {
 	 *            the source to set
 	 */
 	public void setSource(Paper source) {
-		this.source = source;
+		this.endpoint = source;
 	}
 }

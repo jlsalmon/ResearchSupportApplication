@@ -8,7 +8,6 @@ import java.util.Map;
  * @author jussy
  * 
  * @param <V>
- * @param <E>
  */
 public class Graph<V extends Vertex> {
 

@@ -2,14 +2,12 @@ package researchSupport;
 
 public class Reference extends Edge {
 
-	private Paper referee;
-
 	/**
 	 * 
 	 * @param referee
 	 */
 	public Reference(Paper referee) {
-		this.setReferee(referee);
+		this.setEndpoint(referee);
 	}
 
 	/**
@@ -17,14 +15,14 @@ public class Reference extends Edge {
 	 *            the referee to set
 	 */
 	public void setReferee(Paper referee) {
-		this.referee = referee;
+		this.endpoint = referee;
 	}
 
 	/**
 	 * @return the referee
 	 */
 	public Paper getReferee() {
-		return referee;
+		return (Paper) this.endpoint;
 	}
 
 }
