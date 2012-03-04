@@ -167,8 +167,10 @@ public class ResearchSupportTextInterface {
 
 	public void print(HashSet<Stack<Paper>> chains) {
 		for (Stack<Paper> s : chains) {
-			for (int i = 0; i < s.size(); i++) {
-				System.out.println(s.pop().toString());
+			System.out.println();
+			for (Paper p : s) {
+				System.out.print((s.indexOf(p) < s.size() - 1) ? p.getTitle()
+						+ " -> " : p.getTitle());
 			}
 		}
 	}

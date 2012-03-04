@@ -9,6 +9,7 @@ import java.util.Stack;
  * @author jussy
  * 
  */
+
 public class PaperManager {
 
 	Graph<Paper> papers;
@@ -26,6 +27,11 @@ public class PaperManager {
 	 * @return
 	 */
 	public boolean addPaper(Paper paper) {
+		if (this.papers.containsVertex(paper.getTitle())) {
+			System.out
+					.println("Paper " + paper.getTitle() + " already exists.");
+			return false;
+		}
 		return this.papers.addVertex(paper.getTitle(), paper);
 	}
 
@@ -35,6 +41,36 @@ public class PaperManager {
 	 * @param referee
 	 */
 	public boolean makeReference(String referrer, String referee) {
+
+		/*
+		 * Prevent circular references:
+		 * 
+		 * If there is already a path from the referrer to the referee, a
+		 * circular reference will be created.
+		 */
+
+		papers.resetVisitedState();
+		if (!dfs(getPaper(referee), getPaper(referee), Graph.SEARCH_CITATIONS,
+				Graph.NO_LIMIT, getPaper(referrer))
+				|| !dfs(getPaper(referee), getPaper(referee),
+						Graph.SEARCH_REFERENCES, Graph.NO_LIMIT,
+						getPaper(referrer))) {
+			System.out
+					.println(referrer
+							+ " -> "
+							+ referee
+							+ " would create a cycle. Circular references not allowed.");
+			return false;
+		}
+
+		for (Reference r : getPaper(referrer).getReferences()) {
+			if (r.getReferee().equals(getPaper(referee))) {
+				System.out.println("Paper " + referrer + " already references "
+						+ referee + ". Duplicate references not allowed.");
+				return false;
+			}
+		}
+
 		if (!this.papers.containsVertex(referee)) {
 			System.out.println("Paper " + referee + " not found.");
 		} else if (!this.papers.containsVertex(referrer)) {
@@ -86,6 +122,11 @@ public class PaperManager {
 		return references;
 	}
 
+	/**
+	 * 
+	 * @param title
+	 * @return
+	 */
 	public HashSet<Stack<Paper>> getAllCitationChains(String title) {
 		if (!this.papers.containsVertex(title)) {
 			System.out.println("Paper " + title + " not found.");
@@ -96,6 +137,11 @@ public class PaperManager {
 		}
 	}
 
+	/**
+	 * 
+	 * @param title
+	 * @return
+	 */
 	public HashSet<Stack<Paper>> getAllReferenceChains(String title) {
 		if (!this.papers.containsVertex(title)) {
 			System.out.println("Paper " + title + " not found.");
@@ -106,14 +152,36 @@ public class PaperManager {
 		}
 	}
 
-	public void getNCitations(String title, int n) {
-		// TODO Auto-generated method stub
-
+	/**
+	 * 
+	 * @param title
+	 * @param limit
+	 * @return
+	 */
+	public HashSet<Stack<Paper>> getNCitations(String title, int limit) {
+		if (!this.papers.containsVertex(title)) {
+			System.out.println("Paper " + title + " not found.");
+			return null;
+		} else {
+			return this.getPaths(getPaper(title).getTitle(),
+					Graph.SEARCH_CITATIONS, limit);
+		}
 	}
 
-	public void getNReferences(String title, int n) {
-		// TODO Auto-generated method stub
-
+	/**
+	 * 
+	 * @param title
+	 * @param limit
+	 * @return
+	 */
+	public HashSet<Stack<Paper>> getNReferences(String title, int limit) {
+		if (!this.papers.containsVertex(title)) {
+			System.out.println("Paper " + title + " not found.");
+			return null;
+		} else {
+			return this.getPaths(getPaper(title).getTitle(),
+					Graph.SEARCH_REFERENCES, limit);
+		}
 	}
 
 	/**
@@ -126,50 +194,25 @@ public class PaperManager {
 	Stack<Paper> chain = new Stack<Paper>();
 
 	public HashSet<Stack<Paper>> getPaths(String title, int method, int limit) {
-
 		papers.resetVisitedState();
-
 		Paper front = getPaper(title);
+		chain.clear();
+		chains.clear();
 
-		dfs(front, method, limit);
-
+		dfs(front, front, method, limit, null);
 		return chains;
-
-		// front.setVisited(true);
-		// Paper next;
-		//
-		// Queue traversalOrder = new Queue();
-		// Queue vertexQueue = new Queue();
-		//
-		// traversalOrder.joinBack(front.getTitle());
-		// vertexQueue.joinBack(front);
-		//
-		// while (!vertexQueue.isEmpty()) {
-		// front = (Paper) vertexQueue.leaveFront();
-		//
-		// if (method == Graph.SEARCH_CITATIONS) {
-		// next = getUncheckedCitation(front);
-		// } else {
-		// next = getUncheckedReference(front);
-		// }
-		//
-		// while (next != null) {
-		// next.setVisited(true);
-		// traversalOrder.joinBack(next.getTitle());
-		// vertexQueue.joinBack(next);
-		//
-		// if (method == Graph.SEARCH_CITATIONS) {
-		// next = getUncheckedCitation(front);
-		// } else {
-		// next = getUncheckedReference(front);
-		// }
-		// }
-		// }
-		//
-		// return traversalOrder;
 	}
 
-	private boolean dfs(Paper front, int method, int limit) {
+	/**
+	 * 
+	 * @param origin
+	 * @param front
+	 * @param method
+	 * @param limit
+	 * @return
+	 */
+	private boolean dfs(Paper origin, Paper front, int method, int limit,
+			Paper goal) {
 		front.setVisited(true);
 		chain.add(front);
 
@@ -181,17 +224,26 @@ public class PaperManager {
 			children = getUncheckedReferences(front);
 		}
 
-		if (children.isEmpty() || limit == 0) {
+		if (children.contains(goal)) {
+			return false;
+		}
+
+		if (children.isEmpty() || limit-- == 0) {
 			chains.add(chain);
 			return true;
 		} else {
-			for (Paper p : children) {
-				if (dfs(children.pop(), method, --limit)) {
-					return true;
-				}
+			for (int i = 0; i < children.size(); i++) {
+				if (!chain.contains(front))
+					chain.add(front);
+
+				dfs(origin, children.get(i), method, limit, goal);
+				chain = new Stack<Paper>();
+
+				if (!chain.contains(origin))
+					chain.add(origin);
 			}
+			return true;
 		}
-		return false;
 	}
 
 	/**

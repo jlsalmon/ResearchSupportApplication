@@ -158,10 +158,20 @@ public class ResearchSupportApplication {
 	}
 
 	public void listNCitations(String title, int n) {
-		pm.getNCitations(title, n);
+		HashSet<Stack<Paper>> chains = pm.getNCitations(title, n);
+		if (pm.getDirectCitations(title).isEmpty() || chains.isEmpty()) {
+			rsti.print("No citations found for " + title);
+		} else {
+			rsti.print(chains);
+		}
 	}
 
 	public void listNReferences(String title, int n) {
-		pm.getNReferences(title, n);
+		HashSet<Stack<Paper>> chains = pm.getNReferences(title, n);
+		if (pm.getDirectReferences(title).isEmpty() || chains.isEmpty()) {
+			rsti.print("No references found for " + title);
+		} else {
+			rsti.print(chains);
+		}
 	}
 }
