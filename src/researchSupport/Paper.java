@@ -132,6 +132,7 @@ public class Paper extends Vertex {
 
 	@Override
 	public String toString() {
-		return "Title: " + getTitle() + "\t\tRating: " + getRating();
+		return "Title: " + getTitle() + "\tRating: " + getRating()
+				+ "\tCited by " + getNumCitations();
 	}
 }
