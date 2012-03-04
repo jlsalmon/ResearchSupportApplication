@@ -29,31 +29,30 @@ public class ResearchSupportTextInterface {
 	}
 
 	/**
-	 * Manages the display of the text-based display. Gets any necessary
-	 * input.
+	 * Manages the display of the text-based display. Gets any necessary input.
 	 * 
 	 * @throws IOException
 	 */
 	public void start() throws IOException {
 
 		action = menu(); // Display the menu
-		
-		if ((action < 1) || (action > 11)) {			
-			System.out.println("\nInvalid choice. Try again\n");	
+
+		if ((action < 1) || (action > 11)) {
+			System.out.println("\nInvalid choice. Try again\n");
 		} else {
-			
+
 			// For valid choices other than "QUIT" or "LOAD", get title
 			if ((action != 0) && (action != 10)) {
-				
+
 				paperTitle = inputPaperTitle();
-				
+
 				if (action == 1) {
 					rating = inputLevelCountOrRating("rating");
 					this.paper = new Paper(paperTitle, rating);
-					
+
 				} else if (action == 2) {
 					refTitle = inputPaperTitle();
-					
+
 				} else if ((action == 8) || (action == 9)) {
 					levels = inputLevelCountOrRating("level");
 				}
@@ -70,7 +69,7 @@ public class ResearchSupportTextInterface {
 
 		int choice = -1;
 		Scanner scan = new Scanner(System.in);
-		
+
 		System.out.println("\nPaper REPOSITORY MENU\n");
 		System.out.println("1\tAdd a paper to the repository");
 		System.out.println("2\tMake a paper a reference");
@@ -121,7 +120,7 @@ public class ResearchSupportTextInterface {
 		Scanner scan = new Scanner(System.in);
 		String sNumber = "";
 		int number = 0;
-		
+
 		while ((number < 1) || (number > 5)) {
 			System.out.print("Input " + prompt
 					+ " as an integer in the range 1 - 5: ");
@@ -155,7 +154,7 @@ public class ResearchSupportTextInterface {
 	public String getPaperTitle() {
 		return paperTitle;
 	}
-	
+
 	public void print(String s) {
 		System.out.println(s);
 	}
@@ -166,7 +165,11 @@ public class ResearchSupportTextInterface {
 		}
 	}
 
-	public void print(Queue chains) {
-		print(chains.toString());
+	public void print(HashSet<Stack<Paper>> chains) {
+		for (Stack<Paper> s : chains) {
+			for (int i = 0; i < s.size(); i++) {
+				System.out.println(s.pop().toString());
+			}
+		}
 	}
 }

@@ -10,7 +10,7 @@ import java.util.Map;
  * @param <V>
  * @param <E>
  */
-public class Graph<V extends Vertex, E> {
+public class Graph<V extends Vertex> {
 
 	Map<String, V> vertices;
 	int numEdges;

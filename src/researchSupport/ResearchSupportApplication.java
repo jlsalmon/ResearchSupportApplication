@@ -140,7 +140,7 @@ public class ResearchSupportApplication {
 	}
 
 	public void listAllCitationChains(String title) {
-		Queue chains = pm.getAllCitationChains(title);
+		HashSet<Stack<Paper>> chains = pm.getAllCitationChains(title);
 		if (pm.getDirectCitations(title).isEmpty() || chains.isEmpty()) {
 			rsti.print("No citations found for " + title);
 		} else {
@@ -149,7 +149,7 @@ public class ResearchSupportApplication {
 	}
 
 	public void listAllReferenceChains(String title) {
-		Queue chains = pm.getAllReferenceChains(title);
+		HashSet<Stack<Paper>> chains = pm.getAllReferenceChains(title);
 		if (pm.getDirectReferences(title).isEmpty() || chains.isEmpty()) {
 			rsti.print("No references found for " + title);
 		} else {

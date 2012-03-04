@@ -11,13 +11,13 @@ import java.util.Stack;
  */
 public class PaperManager {
 
-	Graph<Paper, Reference> papers;
+	Graph<Paper> papers;
 
 	/**
 	 * 
 	 */
 	public PaperManager() {
-		this.papers = new Graph<Paper, Reference>();
+		this.papers = new Graph<Paper>();
 	}
 
 	/**
@@ -86,7 +86,7 @@ public class PaperManager {
 		return references;
 	}
 
-	public Queue getAllCitationChains(String title) {
+	public HashSet<Stack<Paper>> getAllCitationChains(String title) {
 		if (!this.papers.containsVertex(title)) {
 			System.out.println("Paper " + title + " not found.");
 			return null;
@@ -96,7 +96,7 @@ public class PaperManager {
 		}
 	}
 
-	public Queue getAllReferenceChains(String title) {
+	public HashSet<Stack<Paper>> getAllReferenceChains(String title) {
 		if (!this.papers.containsVertex(title)) {
 			System.out.println("Paper " + title + " not found.");
 			return null;
@@ -122,43 +122,76 @@ public class PaperManager {
 	 * @param limit
 	 * @return
 	 */
-	public Queue getPaths(String title, int method, int limit) {
+	HashSet<Stack<Paper>> chains = new HashSet<Stack<Paper>>();
+	Stack<Paper> chain = new Stack<Paper>();
+
+	public HashSet<Stack<Paper>> getPaths(String title, int method, int limit) {
 
 		papers.resetVisitedState();
 
 		Paper front = getPaper(title);
+
+		dfs(front, method, limit);
+
+		return chains;
+
+		// front.setVisited(true);
+		// Paper next;
+		//
+		// Queue traversalOrder = new Queue();
+		// Queue vertexQueue = new Queue();
+		//
+		// traversalOrder.joinBack(front.getTitle());
+		// vertexQueue.joinBack(front);
+		//
+		// while (!vertexQueue.isEmpty()) {
+		// front = (Paper) vertexQueue.leaveFront();
+		//
+		// if (method == Graph.SEARCH_CITATIONS) {
+		// next = getUncheckedCitation(front);
+		// } else {
+		// next = getUncheckedReference(front);
+		// }
+		//
+		// while (next != null) {
+		// next.setVisited(true);
+		// traversalOrder.joinBack(next.getTitle());
+		// vertexQueue.joinBack(next);
+		//
+		// if (method == Graph.SEARCH_CITATIONS) {
+		// next = getUncheckedCitation(front);
+		// } else {
+		// next = getUncheckedReference(front);
+		// }
+		// }
+		// }
+		//
+		// return traversalOrder;
+	}
+
+	private boolean dfs(Paper front, int method, int limit) {
 		front.setVisited(true);
-		Paper next;
+		chain.add(front);
 
-		Queue traversalOrder = new Queue();
-		Queue vertexQueue = new Queue();
+		Stack<Paper> children;
 
-		traversalOrder.joinBack(front.getTitle());
-		vertexQueue.joinBack(front);
+		if (method == Graph.SEARCH_CITATIONS) {
+			children = getUncheckedCitations(front);
+		} else {
+			children = getUncheckedReferences(front);
+		}
 
-		while (!vertexQueue.isEmpty()) {
-			front = (Paper) vertexQueue.leaveFront();
-
-			if (method == Graph.SEARCH_CITATIONS) {
-				next = getUncheckedCitation(front);
-			} else {
-				next = getUncheckedReference(front);
-			}
-
-			while (next != null) {
-				next.setVisited(true);
-				traversalOrder.joinBack(next.getTitle());
-				vertexQueue.joinBack(next);
-
-				if (method == Graph.SEARCH_CITATIONS) {
-					next = getUncheckedCitation(front);
-				} else {
-					next = getUncheckedReference(front);
+		if (children.isEmpty() || limit == 0) {
+			chains.add(chain);
+			return true;
+		} else {
+			for (Paper p : children) {
+				if (dfs(children.pop(), method, --limit)) {
+					return true;
 				}
 			}
 		}
-
-		return traversalOrder;
+		return false;
 	}
 
 	/**
@@ -166,15 +199,14 @@ public class PaperManager {
 	 * @param p
 	 * @return
 	 */
-	private Paper getUncheckedReference(Paper p) {
+	private Stack<Paper> getUncheckedReferences(Paper p) {
+		Stack<Paper> refs = new Stack<Paper>();
 		for (Reference r : p.getReferences()) {
-			if (r.getReferee().isVisited()) {
-				return null;
-			} else {
-				return r.getReferee();
+			if (!r.getReferee().isVisited()) {
+				refs.push(r.getReferee());
 			}
 		}
-		return null;
+		return refs;
 	}
 
 	/**
@@ -182,14 +214,13 @@ public class PaperManager {
 	 * @param p
 	 * @return
 	 */
-	private Paper getUncheckedCitation(Paper p) {
+	private Stack<Paper> getUncheckedCitations(Paper p) {
+		Stack<Paper> cits = new Stack<Paper>();
 		for (Citation c : p.getCitations()) {
-			if (c.getSource().isVisited()) {
-				return null;
-			} else {
-				return c.getSource();
+			if (!c.getSource().isVisited()) {
+				cits.push(c.getSource());
 			}
 		}
-		return null;
+		return cits;
 	}
 }
