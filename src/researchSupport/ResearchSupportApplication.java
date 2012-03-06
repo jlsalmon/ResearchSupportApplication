@@ -12,6 +12,12 @@ import java.util.Stack;
  */
 public class ResearchSupportApplication {
 
+	private static final int ADD_PAPER = 1, MAKE_REFERENCE = 2,
+			DISPLAY_PAPER = 3, LIST_DIRECT_CITATIONS = 4,
+			LIST_DIRECT_REFERENCES = 5, LIST_ALL_CITATIONS = 6,
+			LIST_ALL_REFERENCES = 7, LIST_N_CITATIONS = 8,
+			LIST_N_REFERENCES = 9, LOAD_DATA = 10, EXIT = 0;
+
 	PaperManager pm = new PaperManager();
 	ResearchSupportTextInterface rsti = new ResearchSupportTextInterface();
 
@@ -26,43 +32,43 @@ public class ResearchSupportApplication {
 			Paper thisPaper = rsti.getPaper();
 
 			switch (action) {
-			case 10: {
+			case LOAD_DATA: {
 				td.loadData(this);
 				break;
 			}
-			case 1: {
+			case ADD_PAPER: {
 				addPaper(thisPaper);
 				break;
 			}
-			case 2: {
+			case MAKE_REFERENCE: {
 				makeLinkToReference(rsti.getRefTitle(), rsti.getPaperTitle());
 				break;
 			}
-			case 3: {
+			case DISPLAY_PAPER: {
 				listPaperDetails(rsti.getPaperTitle());
 				break;
 			}
-			case 4: {
+			case LIST_DIRECT_CITATIONS: {
 				listDirectCitations(rsti.getPaperTitle());
 				break;
 			}
-			case 5: {
+			case LIST_DIRECT_REFERENCES: {
 				listDirectReferences(rsti.getPaperTitle());
 				break;
 			}
-			case 6: {
+			case LIST_ALL_CITATIONS: {
 				listAllCitationChains(rsti.getPaperTitle());
 				break;
 			}
-			case 7: {
+			case LIST_ALL_REFERENCES: {
 				listAllReferenceChains(rsti.getPaperTitle());
 				break;
 			}
-			case 8: {
+			case LIST_N_CITATIONS: {
 				listNCitations(rsti.getPaperTitle(), rsti.getLevels());
 				break;
 			}
-			case 9: {
+			case LIST_N_REFERENCES: {
 				listNReferences(rsti.getPaperTitle(), rsti.getLevels());
 				break;
 
@@ -105,11 +111,10 @@ public class ResearchSupportApplication {
 	 * @param title
 	 */
 	public void listPaperDetails(String title) {
-		Paper p = pm.getPaper(title);
-		if (p == null) {
+		if (!pm.isExistingPaper(title)) {
 			rsti.print("No papers with title " + title + " found.");
 		} else {
-			rsti.print(p.toString());
+			rsti.print(pm.getPaper(title).toString());
 		}
 	}
 
@@ -139,36 +144,54 @@ public class ResearchSupportApplication {
 		}
 	}
 
+	/**
+	 * 
+	 * @param title
+	 */
 	public void listAllCitationChains(String title) {
 		HashSet<Stack<Paper>> chains = pm.getAllCitationChains(title);
-		if (pm.getDirectCitations(title).isEmpty() || chains.isEmpty()) {
+		if (chains == null || chains.isEmpty()) {
 			rsti.print("No citations found for " + title);
 		} else {
 			rsti.print(chains);
 		}
 	}
 
+	/**
+	 * 
+	 * @param title
+	 */
 	public void listAllReferenceChains(String title) {
 		HashSet<Stack<Paper>> chains = pm.getAllReferenceChains(title);
-		if (pm.getDirectReferences(title).isEmpty() || chains.isEmpty()) {
+		if (chains == null || chains.isEmpty()) {
 			rsti.print("No references found for " + title);
 		} else {
 			rsti.print(chains);
 		}
 	}
 
+	/**
+	 * 
+	 * @param title
+	 * @param n
+	 */
 	public void listNCitations(String title, int n) {
 		HashSet<Stack<Paper>> chains = pm.getNCitations(title, n);
-		if (pm.getDirectCitations(title).isEmpty() || chains.isEmpty()) {
+		if (chains == null || chains.isEmpty()) {
 			rsti.print("No citations found for " + title);
 		} else {
 			rsti.print(chains);
 		}
 	}
 
+	/**
+	 * 
+	 * @param title
+	 * @param n
+	 */
 	public void listNReferences(String title, int n) {
 		HashSet<Stack<Paper>> chains = pm.getNReferences(title, n);
-		if (pm.getDirectReferences(title).isEmpty() || chains.isEmpty()) {
+		if (chains == null || chains.isEmpty()) {
 			rsti.print("No references found for " + title);
 		} else {
 			rsti.print(chains);

@@ -37,7 +37,7 @@ public class ResearchSupportTextInterface {
 
 		action = menu(); // Display the menu
 
-		if ((action < 1) || (action > 11)) {
+		if ((action < 0) || (action > 10)) {
 			System.out.println("\nInvalid choice. Try again\n");
 		} else {
 
@@ -82,7 +82,7 @@ public class ResearchSupportTextInterface {
 		System.out.println("9\tList n-levels of references\n");
 		System.out.println("10\tLoad Data");
 
-		System.out.println("11\tEXIT\n");
+		System.out.println("0\tEXIT\n");
 
 		System.out.println("Enter menu choice, 0 to exit: ");
 
@@ -135,36 +135,68 @@ public class ResearchSupportTextInterface {
 		return number;
 	}
 
+	/**
+	 * 
+	 * @return
+	 */
 	public int getAction() {
 		return action;
 	}
 
+	/**
+	 * 
+	 * @return
+	 */
 	public Paper getPaper() {
 		return paper;
 	}
 
+	/**
+	 * 
+	 * @return
+	 */
 	public int getLevels() {
 		return levels;
 	}
 
+	/**
+	 * 
+	 * @return
+	 */
 	public String getRefTitle() {
 		return refTitle;
 	}
 
+	/**
+	 * 
+	 * @return
+	 */
 	public String getPaperTitle() {
 		return paperTitle;
 	}
 
+	/**
+	 * 
+	 * @param s
+	 */
 	public void print(String s) {
 		System.out.println(s);
 	}
 
+	/**
+	 * 
+	 * @param references
+	 */
 	public void print(Set<Paper> references) {
 		for (Paper p : references) {
 			System.out.println(p.toString());
 		}
 	}
 
+	/**
+	 * 
+	 * @param chains
+	 */
 	public void print(HashSet<Stack<Paper>> chains) {
 		for (Stack<Paper> s : chains) {
 			System.out.println();

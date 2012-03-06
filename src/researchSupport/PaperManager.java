@@ -26,7 +26,7 @@ public class PaperManager {
 	 * @return
 	 */
 	public boolean addPaper(Paper paper) {
-		if (this.papers.containsVertex(paper.getTitle())) {
+		if (isExistingPaper(paper.getTitle())) {
 			System.out
 					.println("Paper " + paper.getTitle() + " already exists.");
 			return false;
@@ -35,50 +35,49 @@ public class PaperManager {
 	}
 
 	/**
+	 * If there is already a path from the referrer to the referee, a circular
+	 * reference will be created.
 	 * 
 	 * @param referrer
 	 * @param referee
 	 */
-	public boolean makeReference(String referrer, String referee) {
+	public boolean makeReference(String referrerTitle, String refereeTitle) {
+		Paper referrer = getPaper(referrerTitle);
+		Paper referee = getPaper(refereeTitle);
 
-		/*
-		 * Prevent circular references:
-		 * 
-		 * If there is already a path from the referrer to the referee, a
-		 * circular reference will be created.
-		 */
-
-		papers.resetVisitedState();
-		if (!dfs(getPaper(referee), getPaper(referee), Graph.SEARCH_CITATIONS,
-				Graph.NO_LIMIT, getPaper(referrer))
-				|| !dfs(getPaper(referee), getPaper(referee),
-						Graph.SEARCH_REFERENCES, Graph.NO_LIMIT,
-						getPaper(referrer))) {
-			System.out
-					.println(referrer
-							+ " -> "
-							+ referee
-							+ " would create a cycle. Circular references not allowed.");
+		/** Check papers exist first */
+		if (!isExistingPaper(refereeTitle)) {
+			System.out.println("Paper " + referee + " not found.");
+			return false;
+		} else if (!isExistingPaper(referrerTitle)) {
+			System.out.println("Paper " + referrer + " not found.");
 			return false;
 		}
 
-		for (Reference r : getPaper(referrer).getReferences()) {
-			if (r.getReferee().equals(getPaper(referee))) {
-				System.out.println("Paper " + referrer + " already references "
-						+ referee + ". Duplicate references not allowed.");
+		/** Search for cycles */
+		papers.resetVisitedState();
+		if (!dfs(referee, referee, Graph.SEARCH_CITATIONS, Graph.NO_LIMIT,
+				referrer)
+				|| !dfs(referee, referee, Graph.SEARCH_REFERENCES,
+						Graph.NO_LIMIT, referrer)) {
+			System.out.println(referrerTitle + " -> " + refereeTitle
+					+ " would create a cycle.");
+			return false;
+		}
+
+		/** Check for duplicate references */
+		for (Reference r : referrer.getReferences()) {
+			if (r.getReferee().equals(referee)) {
+				System.out.println("Paper " + referrerTitle
+						+ " already references " + refereeTitle
+						+ ". Duplicate references not allowed.");
 				return false;
 			}
 		}
 
-		if (!this.papers.containsVertex(referee)) {
-			System.out.println("Paper " + referee + " not found.");
-		} else if (!this.papers.containsVertex(referrer)) {
-			System.out.println("Paper " + referrer + " not found.");
-		} else {
-			return getPaper(referrer).createReference(getPaper(referee))
-					&& getPaper(referee).createCitation(getPaper(referrer));
-		}
-		return false;
+		/** OK to make reference! */
+		return referrer.createReference(referee)
+				&& referee.createCitation(referrer);
 	}
 
 	/**
@@ -102,6 +101,12 @@ public class PaperManager {
 	 */
 	public Set<Paper> getDirectCitations(String title) {
 		Set<Paper> citations = new HashSet<Paper>();
+
+		if (!isExistingPaper(title)) {
+			System.out.println("Paper " + title + " not found.");
+			return citations;
+		}
+
 		for (Citation c : getPaper(title).getCitations()) {
 			citations.add(c.getSource());
 		}
@@ -115,6 +120,12 @@ public class PaperManager {
 	 */
 	public Set<Paper> getDirectReferences(String title) {
 		Set<Paper> references = new HashSet<Paper>();
+
+		if (!isExistingPaper(title)) {
+			System.out.println("Paper " + title + " not found.");
+			return references;
+		}
+
 		for (Reference r : getPaper(title).getReferences()) {
 			references.add(r.getReferee());
 		}
@@ -127,7 +138,7 @@ public class PaperManager {
 	 * @return
 	 */
 	public HashSet<Stack<Paper>> getAllCitationChains(String title) {
-		if (!this.papers.containsVertex(title)) {
+		if (!isExistingPaper(title)) {
 			System.out.println("Paper " + title + " not found.");
 			return null;
 		} else {
@@ -142,7 +153,7 @@ public class PaperManager {
 	 * @return
 	 */
 	public HashSet<Stack<Paper>> getAllReferenceChains(String title) {
-		if (!this.papers.containsVertex(title)) {
+		if (!isExistingPaper(title)) {
 			System.out.println("Paper " + title + " not found.");
 			return null;
 		} else {
@@ -158,7 +169,7 @@ public class PaperManager {
 	 * @return
 	 */
 	public HashSet<Stack<Paper>> getNCitations(String title, int limit) {
-		if (!this.papers.containsVertex(title)) {
+		if (!isExistingPaper(title)) {
 			System.out.println("Paper " + title + " not found.");
 			return null;
 		} else {
@@ -174,7 +185,7 @@ public class PaperManager {
 	 * @return
 	 */
 	public HashSet<Stack<Paper>> getNReferences(String title, int limit) {
-		if (!this.papers.containsVertex(title)) {
+		if (!isExistingPaper(title)) {
 			System.out.println("Paper " + title + " not found.");
 			return null;
 		} else {
@@ -279,5 +290,14 @@ public class PaperManager {
 			}
 		}
 		return cits;
+	}
+
+	/**
+	 * 
+	 * @param title
+	 * @return
+	 */
+	public boolean isExistingPaper(String title) {
+		return (this.papers.containsVertex(title));
 	}
 }
