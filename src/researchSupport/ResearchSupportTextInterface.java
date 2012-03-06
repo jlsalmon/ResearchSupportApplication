@@ -70,7 +70,7 @@ public class ResearchSupportTextInterface {
 		int choice = -1;
 		Scanner scan = new Scanner(System.in);
 
-		System.out.println("\nPaper REPOSITORY MENU\n");
+		System.out.println("\nPaper Repository Menu\n");
 		System.out.println("1\tAdd a paper to the repository");
 		System.out.println("2\tMake a paper a reference");
 		System.out.println("3\tList paper details");
