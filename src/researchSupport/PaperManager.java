@@ -11,7 +11,9 @@ import java.util.Stack;
  */
 public class PaperManager {
 
-	Graph<Paper> papers;
+	private Graph<Paper> papers;
+	HashSet<Stack<Paper>> chains = new HashSet<Stack<Paper>>();
+	Stack<Paper> chain = new Stack<Paper>();
 
 	/**
 	 * 
@@ -27,8 +29,8 @@ public class PaperManager {
 	 */
 	public boolean addPaper(Paper paper) {
 		if (isExistingPaper(paper.getTitle())) {
-			System.out
-					.println("Paper " + paper.getTitle() + " already exists.");
+			System.out.println("\nPaper " + paper.getTitle()
+					+ " already exists.");
 			return false;
 		}
 		return this.papers.addVertex(paper.getTitle(), paper);
@@ -47,11 +49,20 @@ public class PaperManager {
 
 		/** Check papers exist first */
 		if (!isExistingPaper(refereeTitle)) {
-			System.out.println("Paper " + referee + " not found.");
+			System.out.println("Paper " + refereeTitle + " not found.");
 			return false;
 		} else if (!isExistingPaper(referrerTitle)) {
-			System.out.println("Paper " + referrer + " not found.");
+			System.out.println("Paper " + referrerTitle + " not found.");
 			return false;
+		}
+
+		/** Check for duplicate references */
+		for (Paper p : referrer.getReferences()) {
+			if (p.equals(referee)) {
+				System.out.println("Duplicate reference " + referrerTitle
+						+ " -> " + refereeTitle + ".");
+				return false;
+			}
 		}
 
 		/** Search for cycles */
@@ -63,16 +74,6 @@ public class PaperManager {
 			System.out.println(referrerTitle + " -> " + refereeTitle
 					+ " would create a cycle.");
 			return false;
-		}
-
-		/** Check for duplicate references */
-		for (Reference r : referrer.getReferences()) {
-			if (r.getReferee().equals(referee)) {
-				System.out.println("Paper " + referrerTitle
-						+ " already references " + refereeTitle
-						+ ". Duplicate references not allowed.");
-				return false;
-			}
 		}
 
 		/** OK to make reference! */
@@ -107,8 +108,8 @@ public class PaperManager {
 			return citations;
 		}
 
-		for (Citation c : getPaper(title).getCitations()) {
-			citations.add(c.getSource());
+		for (Paper p : getPaper(title).getCitations()) {
+			citations.add(p);
 		}
 		return citations;
 	}
@@ -126,8 +127,8 @@ public class PaperManager {
 			return references;
 		}
 
-		for (Reference r : getPaper(title).getReferences()) {
-			references.add(r.getReferee());
+		for (Paper p : getPaper(title).getReferences()) {
+			references.add(p);
 		}
 		return references;
 	}
@@ -194,10 +195,6 @@ public class PaperManager {
 		}
 	}
 
-	// TODO refactor these!!
-	HashSet<Stack<Paper>> chains = new HashSet<Stack<Paper>>();
-	Stack<Paper> chain = new Stack<Paper>();
-
 	/**
 	 * 
 	 * @param title
@@ -228,12 +225,12 @@ public class PaperManager {
 		front.setVisited(true);
 		chain.add(front);
 
-		Stack<Paper> children;
+		HashSet<Paper> children;
 
 		if (method == Graph.SEARCH_CITATIONS) {
-			children = getUncheckedCitations(front);
+			children = front.getCitations();
 		} else {
-			children = getUncheckedReferences(front);
+			children = front.getReferences();
 		}
 
 		if (children.contains(goal)) {
@@ -244,11 +241,11 @@ public class PaperManager {
 			chains.add(chain);
 			return true;
 		} else {
-			for (int i = 0; i < children.size(); i++) {
+			for (Paper p : children) {
 				if (!chain.contains(front))
 					chain.add(front);
 
-				if (!dfs(origin, children.get(i), method, limit, goal))
+				if (!dfs(origin, p, method, limit, goal))
 					return false;
 
 				chain = new Stack<Paper>();
@@ -258,38 +255,6 @@ public class PaperManager {
 			}
 			return true;
 		}
-	}
-
-	/**
-	 * TODO refactor this to getUnvisitedChildren() inside Graph
-	 * 
-	 * @param p
-	 * @return
-	 */
-	private Stack<Paper> getUncheckedReferences(Paper p) {
-		Stack<Paper> refs = new Stack<Paper>();
-		for (Reference r : p.getReferences()) {
-			if (!r.getReferee().isVisited()) {
-				refs.push(r.getReferee());
-			}
-		}
-		return refs;
-	}
-
-	/**
-	 * TODO refactor this to getUnvisitedChildren() inside Graph
-	 * 
-	 * @param p
-	 * @return
-	 */
-	private Stack<Paper> getUncheckedCitations(Paper p) {
-		Stack<Paper> cits = new Stack<Paper>();
-		for (Citation c : p.getCitations()) {
-			if (!c.getSource().isVisited()) {
-				cits.push(c.getSource());
-			}
-		}
-		return cits;
 	}
 
 	/**

@@ -2,7 +2,9 @@ package researchSupport;
 
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * 
@@ -88,16 +90,24 @@ public class Paper extends Vertex {
 	 * 
 	 * @return
 	 */
-	public Collection<Citation> getCitations() {
-		return this.citations.values();
+	public HashSet<Paper> getCitations() {
+		HashSet<Paper> cits = new HashSet<Paper>();
+		for (Citation c : this.citations.values()) {
+			cits.add(c.getSource());
+		}
+		return cits;
 	}
 
 	/**
 	 * 
 	 * @return
 	 */
-	public Collection<Reference> getReferences() {
-		return this.references.values();
+	public HashSet<Paper> getReferences() {
+		HashSet<Paper> refs = new HashSet<Paper>();
+		for (Reference r : this.references.values()) {
+			refs.add(r.getReferee());
+		}
+		return refs;
 	}
 
 	/**
@@ -132,7 +142,12 @@ public class Paper extends Vertex {
 
 	@Override
 	public String toString() {
-		return "Title: " + getTitle() + "\t\tRating: " + getRating()
-				+ "\tCited by " + getNumCitations();
+		String rating = "";
+		for (int i = 0; i < getRating(); i++) {
+			rating += '*';
+		}
+		return "Title: " + getTitle()
+				+ (getTitle().length() > 8 ? "\t" : "\t\t") + "Rating: "
+				+ rating + "\tCited by " + getNumCitations();
 	}
 }

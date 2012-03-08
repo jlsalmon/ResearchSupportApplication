@@ -6,9 +6,12 @@ import java.util.Set;
 import java.util.Stack;
 
 /**
+ * ResearchSupportApplication.java
  * 
- * @author jussy
+ * @author Justin Lewis Salmon
+ * @studentId 10000937
  * 
+ *            Description..
  */
 public class ResearchSupportApplication {
 
@@ -21,6 +24,10 @@ public class ResearchSupportApplication {
 	PaperManager pm = new PaperManager();
 	ResearchSupportTextInterface rsti = new ResearchSupportTextInterface();
 
+	/**
+	 * 
+	 * @throws IOException
+	 */
 	public ResearchSupportApplication() throws IOException {
 
 		int action = -1;
@@ -83,7 +90,7 @@ public class ResearchSupportApplication {
 	 */
 	public void addPaper(Paper paper) {
 		if (pm.addPaper(paper)) {
-			rsti.print(paper.getTitle() + " added successfully.");
+			rsti.print("Paper " + paper.getTitle() + " added successfully.");
 		} else {
 			rsti.print("Error: " + paper.getTitle() + " not added.");
 		}
@@ -99,8 +106,8 @@ public class ResearchSupportApplication {
 	 */
 	public void makeLinkToReference(String referrer, String referee) {
 		if (pm.makeReference(referrer, referee)) {
-			rsti.print(pm.getPaper(referrer).getTitle() + " -> "
-					+ pm.getPaper(referee).getTitle() + " reference added");
+			rsti.print("Reference " + pm.getPaper(referrer).getTitle() + " -> "
+					+ pm.getPaper(referee).getTitle() + " added successfully.");
 		} else {
 			rsti.print("Error: reference not added.");
 		}

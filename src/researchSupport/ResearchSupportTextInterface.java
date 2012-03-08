@@ -84,13 +84,13 @@ public class ResearchSupportTextInterface {
 
 		System.out.println("0\tEXIT\n");
 
-		System.out.println("Enter menu choice, 0 to exit: ");
+		System.out.print("Enter menu choice, 0 to exit: ");
 
 		String selection = scan.nextLine();
 		try {
 			choice = Integer.parseInt(selection);
 		} catch (NumberFormatException e) {
-			System.out.println("Please enter an integer ");
+			System.out.print("Please enter an integer ");
 			choice = -1;
 		}
 		return choice;
@@ -106,7 +106,7 @@ public class ResearchSupportTextInterface {
 
 		Scanner scan = new Scanner(System.in);
 		String title;
-		System.out.println("Enter title : ");
+		System.out.print("Enter title : ");
 		title = scan.nextLine();
 		return title;
 	}
@@ -128,7 +128,7 @@ public class ResearchSupportTextInterface {
 				sNumber = scan.nextLine();
 				number = Integer.parseInt(sNumber);
 			} catch (NumberFormatException e) {
-				System.out.println("Please enter digits only");
+				System.out.print("Please enter digits only: ");
 				number = 0;
 			}
 		}
