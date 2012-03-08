@@ -67,7 +67,6 @@ public class ResearchSupportTextInterface {
 	 */
 	private int menu() {
 
-		int choice = -1;
 		Scanner scan = new Scanner(System.in);
 
 		System.out.println("\nPaper Repository Menu\n");
@@ -87,13 +86,12 @@ public class ResearchSupportTextInterface {
 		System.out.print("Enter menu choice, 0 to exit: ");
 
 		String selection = scan.nextLine();
-		try {
-			choice = Integer.parseInt(selection);
-		} catch (NumberFormatException e) {
-			System.out.print("Please enter an integer ");
-			choice = -1;
+		
+		while (!selection.matches("([0-9]|10)")) {
+			System.out.print("Invalid choice. Try again: ");
+			selection = scan.nextLine();
 		}
-		return choice;
+		return Integer.parseInt(selection);
 	}
 
 	/**
@@ -185,10 +183,10 @@ public class ResearchSupportTextInterface {
 
 	/**
 	 * 
-	 * @param references
+	 * @param papers
 	 */
-	public void print(Set<Paper> references) {
-		for (Paper p : references) {
+	public void print(Set<Paper> papers) {
+		for (Paper p : papers) {
 			System.out.println(p.toString());
 		}
 	}
@@ -199,11 +197,12 @@ public class ResearchSupportTextInterface {
 	 */
 	public void print(HashSet<Stack<Paper>> chains) {
 		for (Stack<Paper> s : chains) {
-			System.out.println();
 			for (Paper p : s) {
+				/** Don't print an arrow on the last paper */
 				System.out.print((s.indexOf(p) < s.size() - 1) ? p.getTitle()
 						+ " -> " : p.getTitle());
 			}
+			System.out.println();
 		}
 	}
 }

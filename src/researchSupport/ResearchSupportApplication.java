@@ -134,6 +134,8 @@ public class ResearchSupportApplication {
 		if (citations.isEmpty()) {
 			rsti.print("No citations found for " + title);
 		} else {
+			rsti.print("\nDirect citations for "
+					+ pm.getPaper(title).getTitle() + ":");
 			rsti.print(citations);
 		}
 	}
@@ -147,6 +149,8 @@ public class ResearchSupportApplication {
 		if (references.isEmpty()) {
 			rsti.print("No references found for " + title);
 		} else {
+			rsti.print("\nDirect references for "
+					+ pm.getPaper(title).getTitle() + ":");
 			rsti.print(references);
 		}
 	}
@@ -160,6 +164,8 @@ public class ResearchSupportApplication {
 		if (chains == null || chains.isEmpty()) {
 			rsti.print("No citations found for " + title);
 		} else {
+			rsti.print("\nAll citation chains for "
+					+ pm.getPaper(title).getTitle() + ":");
 			rsti.print(chains);
 		}
 	}
@@ -173,6 +179,8 @@ public class ResearchSupportApplication {
 		if (chains == null || chains.isEmpty()) {
 			rsti.print("No references found for " + title);
 		} else {
+			rsti.print("\nAll reference chains for "
+					+ pm.getPaper(title).getTitle() + ":");
 			rsti.print(chains);
 		}
 	}
@@ -187,6 +195,8 @@ public class ResearchSupportApplication {
 		if (chains == null || chains.isEmpty()) {
 			rsti.print("No citations found for " + title);
 		} else {
+			rsti.print("\nCitation chains to " + n + " levels for "
+					+ pm.getPaper(title).getTitle() + ":");
 			rsti.print(chains);
 		}
 	}
@@ -201,6 +211,8 @@ public class ResearchSupportApplication {
 		if (chains == null || chains.isEmpty()) {
 			rsti.print("No references found for " + title);
 		} else {
+			rsti.print("\nReference chains to " + n + " levels for "
+					+ pm.getPaper(title).getTitle() + ":");
 			rsti.print(chains);
 		}
 	}
