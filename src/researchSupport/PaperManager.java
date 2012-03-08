@@ -11,7 +11,7 @@ import java.util.Stack;
  */
 public class PaperManager {
 
-    private Graph<Paper> papers;
+    private UndirectedGraph<Paper> papers;
     
     public static final int SEARCH_CITATIONS = 0;
     public static final int SEARCH_REFERENCES = 1;
@@ -21,7 +21,7 @@ public class PaperManager {
      * 
      */
     public PaperManager() {
-        this.papers = new Graph<Paper>();
+        this.papers = new UndirectedGraph<Paper>();
     }
 
     /**
