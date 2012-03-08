@@ -9,14 +9,14 @@ import java.util.Map;
  * 
  * @param <V>
  */
-public class Graph<V extends Vertex> {
+public class UndirectedGraph<V extends Vertex> {
 
 	Map<String, V> vertices;
 
 	/**
 	 * 
 	 */
-	public Graph() {
+	public UndirectedGraph() {
 		this.vertices = new HashMap<String, V>();
 	}
 
