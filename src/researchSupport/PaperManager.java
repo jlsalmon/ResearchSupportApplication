@@ -11,15 +11,20 @@ import java.util.Stack;
  */
 public class PaperManager {
 
-	private Graph<Paper> papers;
-	HashSet<Stack<Paper>> chains = new HashSet<Stack<Paper>>();
-	Stack<Paper> chain = new Stack<Paper>();
+	private UndirectedGraph<Paper> papers;
+	/** For storing search chains */
+	private HashSet<Stack<Paper>> chains = new HashSet<Stack<Paper>>();
+	private Stack<Paper> chain = new Stack<Paper>();
+
+	private static final int SEARCH_CITATIONS = 0;
+	private static final int SEARCH_REFERENCES = 1;
+	private static final int NO_SEARCH_LIMIT = -1;
 
 	/**
 	 * 
 	 */
 	public PaperManager() {
-		this.papers = new Graph<Paper>();
+		this.papers = new UndirectedGraph<Paper>();
 	}
 
 	/**
@@ -67,10 +72,9 @@ public class PaperManager {
 
 		/** Search for cycles */
 		papers.resetVisitedState();
-		if (!dfs(referee, referee, Graph.SEARCH_CITATIONS, Graph.NO_LIMIT,
-				referrer)
-				|| !dfs(referee, referee, Graph.SEARCH_REFERENCES,
-						Graph.NO_LIMIT, referrer)) {
+		if (!dfs(referee, referee, SEARCH_CITATIONS, NO_SEARCH_LIMIT, referrer)
+				|| !dfs(referee, referee, SEARCH_REFERENCES, NO_SEARCH_LIMIT,
+						referrer)) {
 			System.out.println(referrerTitle + " -> " + refereeTitle
 					+ " would create a cycle.");
 			return false;
@@ -143,8 +147,8 @@ public class PaperManager {
 			System.out.println("Paper " + title + " not found.");
 			return null;
 		} else {
-			return this.getPaths(getPaper(title).getTitle(),
-					Graph.SEARCH_CITATIONS, Graph.NO_LIMIT);
+			return this.getPaths(getPaper(title).getTitle(), SEARCH_CITATIONS,
+					NO_SEARCH_LIMIT);
 		}
 	}
 
@@ -158,8 +162,8 @@ public class PaperManager {
 			System.out.println("Paper " + title + " not found.");
 			return null;
 		} else {
-			return this.getPaths(getPaper(title).getTitle(),
-					Graph.SEARCH_REFERENCES, Graph.NO_LIMIT);
+			return this.getPaths(getPaper(title).getTitle(), SEARCH_REFERENCES,
+					NO_SEARCH_LIMIT);
 		}
 	}
 
@@ -174,8 +178,8 @@ public class PaperManager {
 			System.out.println("Paper " + title + " not found.");
 			return null;
 		} else {
-			return this.getPaths(getPaper(title).getTitle(),
-					Graph.SEARCH_CITATIONS, limit);
+			return this.getPaths(getPaper(title).getTitle(), SEARCH_CITATIONS,
+					limit);
 		}
 	}
 
@@ -190,8 +194,8 @@ public class PaperManager {
 			System.out.println("Paper " + title + " not found.");
 			return null;
 		} else {
-			return this.getPaths(getPaper(title).getTitle(),
-					Graph.SEARCH_REFERENCES, limit);
+			return this.getPaths(getPaper(title).getTitle(), SEARCH_REFERENCES,
+					limit);
 		}
 	}
 
@@ -227,7 +231,7 @@ public class PaperManager {
 
 		HashSet<Paper> children;
 
-		if (method == Graph.SEARCH_CITATIONS) {
+		if (method == SEARCH_CITATIONS) {
 			children = front.getCitations();
 		} else {
 			children = front.getReferences();
