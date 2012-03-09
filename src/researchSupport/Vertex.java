@@ -12,9 +12,9 @@ import java.util.Map;
  *             undirected graph.
  * 
  * @param <I>
- *            Generic type for inward-facing edges.
+ *            Generic type for inward-facing edges, which must extend Edge.
  * @param <O>
- *            Generic type for outward-facing edges.
+ *            Generic type for outward-facing edges, which must extend Edge.
  */
 public class Vertex<I extends Edge, O extends Edge> {
 

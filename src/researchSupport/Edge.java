@@ -10,6 +10,9 @@ package researchSupport;
  *             other end of the connection. Edges are stored _inside_ Vertices,
  *             so the vertex in which an Edge is stored is the start of the
  *             connection.
+ * 
+ * @param <V>
+ *            the generic vertex type, which must extend Vertex.
  */
 public class Edge<V extends Vertex<?, ?>> {
 	private V endpoint;

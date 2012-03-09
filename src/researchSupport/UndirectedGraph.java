@@ -18,7 +18,7 @@ import java.util.Map;
  *             added but have no connections with any other vertices.
  * 
  * @param <V>
- *            the generic type which extends Vertex.
+ *            the generic vertex type which must extend Vertex.
  */
 public class UndirectedGraph<V extends Vertex<?, ?>> {
 
