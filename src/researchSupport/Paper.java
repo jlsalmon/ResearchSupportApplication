@@ -148,6 +148,7 @@ public class Paper extends Vertex {
 		}
 		return "Title: " + getTitle()
 				+ (getTitle().length() > 8 ? "\t" : "\t\t") + "Rating: "
-				+ rating + "\tCited by " + getNumCitations();
+				+ rating + "\t" + getNumReferences()
+				+ " reference(s) | Cited by " + getNumCitations();
 	}
 }
