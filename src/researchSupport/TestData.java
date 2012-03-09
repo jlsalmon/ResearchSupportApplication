@@ -20,8 +20,8 @@ public class TestData {
 
 		Scanner pFile, cFile, lineScan;
 		String entry, paperRating = null, paperName = null;
-		String refRating = null, refName = null;
-		int intPaperRating = 0, intRefRating = 0;
+		String refName = null;
+		int intPaperRating = 0;
 
 		// read file Papers.txt and create new instance of Paper for each one
 		InputStream instream = getClass().getResourceAsStream(

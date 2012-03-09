@@ -9,9 +9,9 @@ import java.util.Stack;
  * ResearchSupportApplication.java
  * 
  * @author Justin Lewis Salmon
- * @studentId 10000937
+ * @student_id 10000937
  * 
- *            Description..
+ *             Description..
  */
 public class ResearchSupportApplication {
 
@@ -33,7 +33,7 @@ public class ResearchSupportApplication {
 		int action = -1;
 		TestData td = new TestData();
 
-		while (action != 0) {
+		while (action != EXIT) {
 			rsti.start();
 			action = rsti.getAction();
 			Paper thisPaper = rsti.getPaper();

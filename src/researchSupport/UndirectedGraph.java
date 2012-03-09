@@ -9,7 +9,7 @@ import java.util.Map;
  * 
  * @param <V>
  */
-public class UndirectedGraph<V extends Vertex> {
+public class UndirectedGraph<V extends Vertex<?, ?>> {
 
 	Map<String, V> vertices;
 
@@ -60,15 +60,5 @@ public class UndirectedGraph<V extends Vertex> {
 	 */
 	public V getVertex(String key) {
 		return this.vertices.get(key);
-	}
-
-
-	/**
-	 * 
-	 */
-	public void resetVisitedState() {
-		for (V v : this.vertices.values()) {
-			v.setVisited(false);
-		}
 	}
 }

@@ -1,23 +1,16 @@
 package researchSupport;
 
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
 
 /**
  * 
  * @author jussy
  * 
  */
-public class Paper extends Vertex {
+public class Paper extends Vertex<Citation, Reference> {
 	private String title;
 	private int rating;
-	private Map<String, Reference> references;
-	private Map<String, Citation> citations;
-	private int numReferences;
-	private int numCitations;
 
 	/**
 	 * Creates a new instance of Paper
@@ -28,8 +21,8 @@ public class Paper extends Vertex {
 	public Paper(String title, int rating) {
 		this.setTitle(title);
 		this.setRating(rating);
-		this.references = new HashMap<String, Reference>();
-		this.citations = new HashMap<String, Citation>();
+		this.setInEdges(new HashMap<String, Citation>());
+		this.setOutEdges(new HashMap<String, Reference>());
 		this.setNumReferences(0);
 		this.setNumCitations(0);
 	}
@@ -40,7 +33,7 @@ public class Paper extends Vertex {
 	 * @return
 	 */
 	public boolean createReference(Paper referee) {
-		this.references.put(referee.getTitle(), new Reference(referee));
+		this.getOutEdges().put(referee.getTitle(), new Reference(referee));
 		this.setNumReferences(this.getNumReferences() + 1);
 		return true;
 	}
@@ -51,7 +44,7 @@ public class Paper extends Vertex {
 	 * @return
 	 */
 	public boolean createCitation(Paper source) {
-		this.citations.put(source.getTitle(), new Citation(source));
+		this.getInEdges().put(source.getTitle(), new Citation(source));
 		this.setNumCitations(getNumCitations() + 1);
 		return true;
 	}
@@ -92,7 +85,7 @@ public class Paper extends Vertex {
 	 */
 	public HashSet<Paper> getCitations() {
 		HashSet<Paper> cits = new HashSet<Paper>();
-		for (Citation c : this.citations.values()) {
+		for (Citation c : this.getInEdges().values()) {
 			cits.add(c.getSource());
 		}
 		return cits;
@@ -104,7 +97,7 @@ public class Paper extends Vertex {
 	 */
 	public HashSet<Paper> getReferences() {
 		HashSet<Paper> refs = new HashSet<Paper>();
-		for (Reference r : this.references.values()) {
+		for (Reference r : this.getOutEdges().values()) {
 			refs.add(r.getReferee());
 		}
 		return refs;
@@ -114,7 +107,7 @@ public class Paper extends Vertex {
 	 * @return the numReferences
 	 */
 	public int getNumReferences() {
-		return numReferences;
+		return getOutDegree();
 	}
 
 	/**
@@ -122,14 +115,14 @@ public class Paper extends Vertex {
 	 *            the numReferences to set
 	 */
 	public void setNumReferences(int numReferences) {
-		this.numReferences = numReferences;
+		this.setOutDegree(numReferences);
 	}
 
 	/**
 	 * @return the numCitations
 	 */
 	public int getNumCitations() {
-		return numCitations;
+		return getInDegree();
 	}
 
 	/**
@@ -137,7 +130,7 @@ public class Paper extends Vertex {
 	 *            the numCitations to set
 	 */
 	public void setNumCitations(int numCitations) {
-		this.numCitations = numCitations;
+		this.setInDegree(numCitations);
 	}
 
 	@Override

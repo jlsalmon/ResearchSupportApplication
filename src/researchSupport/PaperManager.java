@@ -71,7 +71,6 @@ public class PaperManager {
 		}
 
 		/** Search for cycles */
-		papers.resetVisitedState();
 		if (!dfs(referee, referee, SEARCH_CITATIONS, NO_SEARCH_LIMIT, referrer)
 				|| !dfs(referee, referee, SEARCH_REFERENCES, NO_SEARCH_LIMIT,
 						referrer)) {
@@ -206,7 +205,6 @@ public class PaperManager {
 	 * @return
 	 */
 	public HashSet<Stack<Paper>> getPaths(String title, int method, int limit) {
-		papers.resetVisitedState();
 		Paper front = getPaper(title);
 		chain.clear();
 		chains.clear();
@@ -226,7 +224,6 @@ public class PaperManager {
 	 */
 	private boolean dfs(Paper origin, Paper front, int method, int limit,
 			Paper goal) {
-		front.setVisited(true);
 		chain.add(front);
 
 		HashSet<Paper> children;
