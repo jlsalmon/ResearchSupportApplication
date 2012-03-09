@@ -7,10 +7,15 @@ import java.util.Set;
 import java.util.Stack;
 
 /**
- * Displays the text based interface to the ResearchSupportApplication. Gets the
- * details of the paper to be added/queried. Gets any additional necessary input
- * e.g. paper to be added as a reference or details of levels of display
- * required.
+ * ResearchSupportTextInterface.java
+ * 
+ * @author Justin Lewis Salmon
+ * @student_id 10000937
+ * 
+ *             Displays the text based interface to the
+ *             ResearchSupportApplication. Gets the details of the paper to be
+ *             added/queried. Gets any additional necessary input e.g. paper to
+ *             be added as a reference or details of levels of display required.
  */
 public class ResearchSupportTextInterface {
 
@@ -35,13 +40,14 @@ public class ResearchSupportTextInterface {
 	 */
 	public void start() throws IOException {
 
-		action = menu(); // Display the menu
+		/** Display the menu */
+		action = menu();
 
 		if ((action < 0) || (action > 10)) {
 			System.out.println("\nInvalid choice. Try again\n");
 		} else {
 
-			// For valid choices other than "QUIT" or "LOAD", get title
+			/** For valid choices other than "QUIT" or "LOAD", get title */
 			if ((action != 0) && (action != 10)) {
 
 				paperTitle = inputPaperTitle();
@@ -86,7 +92,7 @@ public class ResearchSupportTextInterface {
 		System.out.print("Enter menu choice, 0 to exit: ");
 
 		String selection = scan.nextLine();
-		
+
 		while (!selection.matches("([0-9]|10)")) {
 			System.out.print("Invalid choice. Try again: ");
 			selection = scan.nextLine();
@@ -134,56 +140,55 @@ public class ResearchSupportTextInterface {
 	}
 
 	/**
-	 * 
-	 * @return
+	 * @return the action just input.
 	 */
 	public int getAction() {
 		return action;
 	}
 
 	/**
-	 * 
-	 * @return
+	 * @return the newly-created Paper.
 	 */
 	public Paper getPaper() {
 		return paper;
 	}
 
 	/**
-	 * 
-	 * @return
+	 * @return the level input just entered.
 	 */
 	public int getLevels() {
 		return levels;
 	}
 
 	/**
-	 * 
-	 * @return
+	 * @return the title of the paper to make a reference for.
 	 */
 	public String getRefTitle() {
 		return refTitle;
 	}
 
 	/**
-	 * 
-	 * @return
+	 * @return the title of the paper just input.
 	 */
 	public String getPaperTitle() {
 		return paperTitle;
 	}
 
 	/**
+	 * Wrapper method for printing a simple string to stdout.
 	 * 
 	 * @param s
+	 *            the string to be printed.
 	 */
 	public void print(String s) {
 		System.out.println(s);
 	}
 
 	/**
+	 * Prints a set of Paper objects using their .toString() methods.
 	 * 
 	 * @param papers
+	 *            the set of papers to be printed.
 	 */
 	public void print(Set<Paper> papers) {
 		for (Paper p : papers) {
@@ -192,8 +197,11 @@ public class ResearchSupportTextInterface {
 	}
 
 	/**
+	 * Prints a set of stacks of Paper objects, representing each stack as a
+	 * chain.
 	 * 
 	 * @param chains
+	 *            the set of stacks of papers.
 	 */
 	public void print(LinkedHashSet<Stack<Paper>> chains) {
 		for (Stack<Paper> s : chains) {

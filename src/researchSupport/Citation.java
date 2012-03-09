@@ -11,7 +11,7 @@ package researchSupport;
  *             paper at the end of this connection is referencing me, so i'm
  *             going to store it as a citation.
  */
-public class Citation extends Edge {
+public class Citation extends Edge<Paper> {
 
 	/**
 	 * Creates a new citation, and sets the endpoint (inherited from Edge) to be
@@ -19,6 +19,7 @@ public class Citation extends Edge {
 	 * referencing this one.
 	 * 
 	 * @param source
+	 *            the paper to set as the source of this citation.
 	 */
 	public Citation(Paper source) {
 		this.setEndpoint(source);

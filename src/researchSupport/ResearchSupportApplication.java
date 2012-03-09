@@ -11,7 +11,11 @@ import java.util.Stack;
  * @author Justin Lewis Salmon
  * @student_id 10000937
  * 
- *             Description..
+ *             Main controlling class for this application. Initiates all
+ *             behaviours and operations, including instantiating test data.
+ *             Communicates with the underlying data structure through the
+ *             PaperManager class, and with the user through the
+ *             ResearchSupportTextInterface class.
  */
 public class ResearchSupportApplication {
 
@@ -25,10 +29,11 @@ public class ResearchSupportApplication {
 	private ResearchSupportTextInterface rsti = new ResearchSupportTextInterface();
 
 	/**
+	 * Launches the user interface and begins the user input loop.
 	 * 
 	 * @throws IOException
 	 */
-	public void launch() throws IOException {
+	public void run() throws IOException {
 		int action = -1;
 		TestData td = new TestData();
 
@@ -73,8 +78,10 @@ public class ResearchSupportApplication {
 	}
 
 	/**
+	 * Attempts to add a paper to the application.
 	 * 
 	 * @param paper
+	 *            the paper to be added.
 	 */
 	public void addPaper(Paper paper) {
 		if (pm.addPaper(paper)) {
@@ -85,12 +92,16 @@ public class ResearchSupportApplication {
 	}
 
 	/**
+	 * Attempts to create a reference link between two papers.
+	 * 
 	 * !!IMPORTANT. Incorrect case for paper names is allowed here due to
 	 * laziness. In practice this is VERY inefficient, as the entire set of
 	 * papers is searched twice more than it needs to be.
 	 * 
 	 * @param referrer
+	 *            the paper making the reference.
 	 * @param referee
+	 *            the paper being referenced.
 	 */
 	public void makeLinkToReference(String referrer, String referee) {
 		if (pm.makeReference(referrer, referee)) {
@@ -102,8 +113,10 @@ public class ResearchSupportApplication {
 	}
 
 	/**
+	 * Attempts to list information for a particular paper.
 	 * 
 	 * @param title
+	 *            the title of the paper to display.
 	 */
 	public void listPaperDetails(String title) {
 		if (!pm.isExistingPaper(title)) {
@@ -114,13 +127,15 @@ public class ResearchSupportApplication {
 	}
 
 	/**
+	 * Attempts to list all direct citations for a paper.
 	 * 
 	 * @param title
+	 *            the title of the paper to get citations for.
 	 */
 	public void listDirectCitations(String title) {
 		Set<Paper> citations = pm.getDirectCitations(title);
 		if (citations.isEmpty()) {
-			rsti.print("No citations found for " + title);
+			rsti.print("No citations found for " + title + ".");
 		} else {
 			rsti.print("\nDirect citations for "
 					+ pm.getPaper(title).getTitle() + ":");
@@ -129,13 +144,15 @@ public class ResearchSupportApplication {
 	}
 
 	/**
+	 * Attempts to list all the direct references of a paper.
 	 * 
 	 * @param title
+	 *            the title of the paper to get references of.
 	 */
 	public void listDirectReferences(String title) {
 		Set<Paper> references = pm.getDirectReferences(title);
 		if (references.isEmpty()) {
-			rsti.print("No references found for " + title);
+			rsti.print("No references found for " + title + ".");
 		} else {
 			rsti.print("\nDirect references for "
 					+ pm.getPaper(title).getTitle() + ":");
@@ -144,13 +161,16 @@ public class ResearchSupportApplication {
 	}
 
 	/**
+	 * Attempts to list all citation chains down to a leaf node for a given
+	 * paper.
 	 * 
 	 * @param title
+	 *            the title of the paper to get citation chains for.
 	 */
 	public void listAllCitationChains(String title) {
 		LinkedHashSet<Stack<Paper>> chains = pm.getAllCitationChains(title);
 		if (chains == null || chains.isEmpty()) {
-			rsti.print("No citations found for " + title);
+			rsti.print("No citations found for " + title + ".");
 		} else {
 			rsti.print("\nAll citation chains for "
 					+ pm.getPaper(title).getTitle() + ":");
@@ -159,13 +179,16 @@ public class ResearchSupportApplication {
 	}
 
 	/**
+	 * Attempts to list all reference chains down to a leaf node for a given
+	 * paper.
 	 * 
 	 * @param title
+	 *            the title of the paper to get reference chains for.
 	 */
 	public void listAllReferenceChains(String title) {
 		LinkedHashSet<Stack<Paper>> chains = pm.getAllReferenceChains(title);
 		if (chains == null || chains.isEmpty()) {
-			rsti.print("No references found for " + title);
+			rsti.print("No references found for " + title + ".");
 		} else {
 			rsti.print("\nAll reference chains for "
 					+ pm.getPaper(title).getTitle() + ":");
@@ -174,14 +197,16 @@ public class ResearchSupportApplication {
 	}
 
 	/**
+	 * Attempts to list all citation chains down to a specified depth limit for
+	 * a given paper.
 	 * 
 	 * @param title
-	 * @param n
+	 *            the title of the paper to get citation chains for.
 	 */
 	public void listNCitations(String title, int n) {
 		LinkedHashSet<Stack<Paper>> chains = pm.getNCitations(title, n);
 		if (chains == null || chains.isEmpty()) {
-			rsti.print("No citations found for " + title);
+			rsti.print("No citations found for " + title + ".");
 		} else {
 			rsti.print("\nCitation chains to " + n + " levels for "
 					+ pm.getPaper(title).getTitle() + ":");
@@ -190,14 +215,16 @@ public class ResearchSupportApplication {
 	}
 
 	/**
+	 * Attempts to list all reference chains down to a specified depth limit for
+	 * a given paper.
 	 * 
 	 * @param title
-	 * @param n
+	 *            the title of the paper to get reference chains for.
 	 */
 	public void listNReferences(String title, int n) {
 		LinkedHashSet<Stack<Paper>> chains = pm.getNReferences(title, n);
 		if (chains == null || chains.isEmpty()) {
-			rsti.print("No references found for " + title);
+			rsti.print("No references found for " + title + ".");
 		} else {
 			rsti.print("\nReference chains to " + n + " levels for "
 					+ pm.getPaper(title).getTitle() + ":");

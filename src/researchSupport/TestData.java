@@ -1,7 +1,3 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package researchSupport;
 
 import java.util.Scanner;
@@ -9,13 +5,24 @@ import java.io.IOException;
 import java.io.InputStream;
 
 /**
+ * TestData.java
  * 
- * @author Jane
+ * @author Justin Lewis Salmon
+ * @student_id 10000937
+ * 
+ *             Reads a file containing test paper data and test reference data
+ *             and adds it into the application.
  */
 public class TestData {
 
 	final String RESOURCE_LOCATION = "/researchSupport/resources/";
 
+	/**
+	 * @param rsa
+	 *            the ResearchSupportApplication instance to pass the test data
+	 *            to.
+	 * @throws IOException
+	 */
 	public void loadData(ResearchSupportApplication rsa) throws IOException {
 
 		Scanner pFile, cFile, lineScan;
@@ -23,7 +30,7 @@ public class TestData {
 		String refName = null;
 		int intPaperRating = 0;
 
-		// read file Papers.txt and create new instance of Paper for each one
+		/** Read file Papers.txt and create new instance of Paper for each one. */
 		InputStream instream = getClass().getResourceAsStream(
 				RESOURCE_LOCATION + "Papers.txt");
 		pFile = new Scanner(instream);
@@ -42,7 +49,7 @@ public class TestData {
 		}
 		System.out.println();
 
-		// read reference file and create the link
+		/** Read reference file and create the link. */
 		instream = getClass().getResourceAsStream(
 				RESOURCE_LOCATION + "References.txt");
 		cFile = new Scanner(instream);

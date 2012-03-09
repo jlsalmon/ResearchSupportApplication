@@ -11,13 +11,13 @@ package researchSupport;
  *             so the vertex in which an Edge is stored is the start of the
  *             connection.
  */
-public class Edge {
-	private Vertex<?, ?> endpoint;
+public class Edge<V extends Vertex<?, ?>> {
+	private V endpoint;
 
 	/**
 	 * @return the endpoint
 	 */
-	public Vertex<?, ?> getEndpoint() {
+	public V getEndpoint() {
 		return endpoint;
 	}
 
@@ -25,7 +25,7 @@ public class Edge {
 	 * @param endpoint
 	 *            the endpoint to set
 	 */
-	public void setEndpoint(Vertex<?, ?> endpoint) {
+	public void setEndpoint(V endpoint) {
 		this.endpoint = endpoint;
 	}
 

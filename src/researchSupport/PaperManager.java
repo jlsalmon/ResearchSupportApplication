@@ -11,7 +11,10 @@ import java.util.Stack;
  * @author Justin Lewis Salmon
  * @student_id 10000937
  * 
- *             Wrapper class for managing
+ *             Wrapper class for managing the underlying data, which is stored
+ *             in an UndirectedGraph of type Paper. Handles adding new papers,
+ *             adding new references/citations (while maintaining the acyclic
+ *             nature of the graph) and initiates all graph traversals.
  */
 public class PaperManager {
 
@@ -19,16 +22,19 @@ public class PaperManager {
 	private UndirectedGraph<Paper> papers;
 
 	/**
-	 * 
+	 * Constructor. Instantiates a new empty graph structure.
 	 */
 	public PaperManager() {
 		this.papers = new UndirectedGraph<Paper>();
 	}
 
 	/**
+	 * Adds a paper to the map of vertices.
 	 * 
 	 * @param paper
-	 * @return
+	 *            the paper to be added.
+	 * @return true if the add was successful, false if the paper already
+	 *         exists.
 	 */
 	public boolean addPaper(Paper paper) {
 		if (isExistingPaper(paper.getTitle())) {
@@ -40,11 +46,18 @@ public class PaperManager {
 	}
 
 	/**
+	 * Creates a reference/citation relationship between two papers, only if the
+	 * two papers exist, there is not already a connection between the two
+	 * papers, and that the addition of the reference would not create a cycle.
+	 * 
 	 * If there is already a path from the referrer to the referee, a circular
-	 * reference will be created.
+	 * reference would be created, which is not allowed (it is nonsensical).
 	 * 
 	 * @param referrer
+	 *            the paper making the reference.
 	 * @param referee
+	 *            the paper being referenced.
+	 * @return true if the connection was successfully created, false otherwise.
 	 */
 	public boolean makeReference(String referrerTitle, String refereeTitle) {
 		Paper referrer = getPaper(referrerTitle);
@@ -91,23 +104,29 @@ public class PaperManager {
 	}
 
 	/**
+	 * Gets a paper from the map of vertices.
 	 * 
 	 * @param title
-	 * @return
+	 *            the title of the paper to retrieve.
+	 * @return the paper object with the specified title.
 	 */
 	public Paper getPaper(String title) {
-		for (String s : this.papers.getAllVertices().keySet()) {
-			if (s.equalsIgnoreCase(title)) {
-				return this.papers.getAllVertices().get(s);
+		for (Paper p : this.papers.getAllVertices().values()) {
+			if (p.getTitle().equalsIgnoreCase(title)) {
+				return p;
 			}
 		}
 		return null;
 	}
 
 	/**
+	 * Gets the set of papers which directly reference the paper with the given
+	 * title, i.e. all the paper's citations.
 	 * 
 	 * @param title
-	 * @return
+	 *            the title of the paper to retrieve citations for.
+	 * @return the set of citations, or an empty set if no citations found or
+	 *         the paper doesn't exist.
 	 */
 	public Set<Paper> getDirectCitations(String title) {
 		Set<Paper> citations = new HashSet<Paper>();
@@ -124,9 +143,13 @@ public class PaperManager {
 	}
 
 	/**
+	 * Gets the set of papers which are directly cited by the paper with the
+	 * given title, i.e. all the paper's references.
 	 * 
 	 * @param title
-	 * @return
+	 *            the title of the paper to retrieve references for.
+	 * @return the set of references, or an empty set if no references found or
+	 *         the paper doesn't exist.
 	 */
 	public Set<Paper> getDirectReferences(String title) {
 		Set<Paper> references = new HashSet<Paper>();
@@ -143,13 +166,19 @@ public class PaperManager {
 	}
 
 	/**
+	 * Gets the set of all traversal routes from the given paper to a leaf
+	 * vertex, following citation links, i.e. traversing up the inward-facing
+	 * edges of the graph.
 	 * 
 	 * @param title
-	 * @return
+	 *            the title of the paper to begin traversal from.
+	 * @return the set of stacks of paper chains representing a citation chain.
 	 */
 	public LinkedHashSet<Stack<Paper>> getAllCitationChains(String title) {
 		if (!isExistingPaper(title)) {
 			System.out.println("Paper " + title + " not found.");
+			return null;
+		} else if (getPaper(title).getCitations().isEmpty()) {
 			return null;
 		} else {
 			return this.getPaths(getPaper(title).getTitle(),
@@ -159,13 +188,19 @@ public class PaperManager {
 	}
 
 	/**
+	 * Gets the set of all traversal routes from the given paper to a leaf
+	 * vertex, following reference links, i.e. traversing up the outward-facing
+	 * edges of the graph.
 	 * 
 	 * @param title
-	 * @return
+	 *            the title of the paper to begin traversal from.
+	 * @return the set of stacks of paper chains representing a reference chain.
 	 */
 	public LinkedHashSet<Stack<Paper>> getAllReferenceChains(String title) {
 		if (!isExistingPaper(title)) {
 			System.out.println("Paper " + title + " not found.");
+			return null;
+		} else if (getPaper(title).getReferences().isEmpty()) {
 			return null;
 		} else {
 			return this.getPaths(getPaper(title).getTitle(),
@@ -175,14 +210,21 @@ public class PaperManager {
 	}
 
 	/**
+	 * Gets the set of all traversal routes from the given paper to a leaf
+	 * vertex, following citation links, i.e. traversing up the inward-facing
+	 * edges of the graph, up to and including the depth specified.
 	 * 
 	 * @param title
+	 *            the title of the paper to begin traversal from.
 	 * @param limit
-	 * @return
+	 *            the depth at which to stop searching.
+	 * @return the set of stacks of paper chains representing a citation chain.
 	 */
 	public LinkedHashSet<Stack<Paper>> getNCitations(String title, int limit) {
 		if (!isExistingPaper(title)) {
 			System.out.println("Paper " + title + " not found.");
+			return null;
+		} else if (getPaper(title).getCitations().isEmpty()) {
 			return null;
 		} else {
 			return this.getPaths(getPaper(title).getTitle(),
@@ -191,14 +233,21 @@ public class PaperManager {
 	}
 
 	/**
+	 * Gets the set of all traversal routes from the given paper to a leaf
+	 * vertex, following reference links, i.e. traversing up the outward-facing
+	 * edges of the graph, up to and including the depth specified.
 	 * 
 	 * @param title
+	 *            the title of the paper to begin traversal from.
 	 * @param limit
-	 * @return
+	 *            the depth at which to stop searching.
+	 * @return the set of stacks of paper chains representing a reference chain.
 	 */
 	public LinkedHashSet<Stack<Paper>> getNReferences(String title, int limit) {
 		if (!isExistingPaper(title)) {
 			System.out.println("Paper " + title + " not found.");
+			return null;
+		} else if (getPaper(title).getReferences().isEmpty()) {
 			return null;
 		} else {
 			return this.getPaths(getPaper(title).getTitle(),
@@ -207,92 +256,31 @@ public class PaperManager {
 	}
 
 	/**
+	 * Initiates a depth-first traversal from the given paper in the given
+	 * direction, up to the given depth.
 	 * 
 	 * @param title
+	 *            the title of the paper to begin traversal from.
 	 * @param limit
-	 * @return
+	 *            the search depth limit.
+	 * @return the set of paths found.
 	 */
 	public LinkedHashSet<Stack<Paper>> getPaths(String title, int method,
 			int limit) {
 
 		Paper front = getPaper(title);
 		DepthFirstSearch<Paper> search = new DepthFirstSearch<Paper>();
-
 		return search.search(front, front, method, limit, null);
 	}
 
 	/**
-	 * TODO refactor this into DepthFirstSearch class
-	 * 
-	 * @param origin
-	 * @param front
-	 * @param method
-	 * @param limit
-	 * @return
-	 */
-	// private boolean dfs(Paper origin, Paper front, int method, int limit,
-	// Paper goal) {
-	// chain.add(front);
-	//
-	// HashSet<Paper> children;
-	//
-	// if (method == SEARCH_CITATIONS) {
-	// children = front.getCitations();
-	// } else {
-	// children = front.getReferences();
-	// }
-	//
-	// if (children.contains(goal)) {
-	// return false;
-	// }
-	//
-	// if (children.isEmpty() || limit-- == 0) {
-	// chains.add(chain);
-	// return true;
-	// } else {
-	// for (Paper p : children) {
-	// if (!chain.contains(front))
-	// chain.add(front);
-	//
-	// if (!dfs(origin, p, method, limit, goal))
-	// return false;
-	//
-	// if (children.size() > 1) {
-	// chain = chop(chain, front);
-	// }
-	//
-	// if (!chain.contains(origin))
-	// chain.add(origin);
-	// }
-	// return true;
-	// }
-	// }
-	//
-	// /**
-	// *
-	// * @param stack
-	// * @param front
-	// * @return
-	// */
-	// @SuppressWarnings("unchecked")
-	// private Stack<Paper> chop(Stack<Paper> stack, Paper front) {
-	// Stack<Paper> newStack = (Stack<Paper>) stack.clone();
-	// for (int i = 0; i < newStack.size(); i++) {
-	// if (newStack.peek().equals(front)) {
-	// return newStack;
-	// } else {
-	// newStack.pop();
-	// }
-	// }
-	// return newStack;
-	// }
-
-	/**
+	 * Checks if a paper exists with the given title.
 	 * 
 	 * @param title
-	 * @return
+	 *            the title of the paper to search for.
+	 * @return true if the paper exists, false otherwise.
 	 */
 	public boolean isExistingPaper(String title) {
-		return (this.papers.containsVertex(title));
+		return this.papers.containsVertex(title);
 	}
 }
