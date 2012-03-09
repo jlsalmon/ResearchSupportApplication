@@ -1,7 +1,7 @@
 package researchSupport;
 
 import java.io.IOException;
-import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.Scanner;
 import java.util.Set;
 import java.util.Stack;
@@ -14,12 +14,12 @@ import java.util.Stack;
  */
 public class ResearchSupportTextInterface {
 
-	int action = 0;
-	Paper paper = null;
-	String refTitle = null;
-	String paperTitle = null;
-	int rating = 0;
-	int levels = 0;
+	private int action;
+	private Paper paper = null;
+	private String refTitle = null;
+	private String paperTitle = null;
+	private int rating;
+	private int levels;
 
 	public ResearchSupportTextInterface() {
 		this.action = 0;
@@ -195,7 +195,7 @@ public class ResearchSupportTextInterface {
 	 * 
 	 * @param chains
 	 */
-	public void print(HashSet<Stack<Paper>> chains) {
+	public void print(LinkedHashSet<Stack<Paper>> chains) {
 		for (Stack<Paper> s : chains) {
 			for (Paper p : s) {
 				/** Don't print an arrow on the last paper */

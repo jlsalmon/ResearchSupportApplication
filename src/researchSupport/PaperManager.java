@@ -1,24 +1,22 @@
 package researchSupport;
 
 import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.Set;
 import java.util.Stack;
 
 /**
+ * PaperManager.java
  * 
- * @author jussy
+ * @author Justin Lewis Salmon
+ * @student_id 10000937
  * 
+ *             Wrapper class for managing
  */
 public class PaperManager {
 
+	/** The main data structure of this application */
 	private UndirectedGraph<Paper> papers;
-	/** For storing search chains */
-	private HashSet<Stack<Paper>> chains = new HashSet<Stack<Paper>>();
-	private Stack<Paper> chain = new Stack<Paper>();
-
-	private static final int SEARCH_CITATIONS = 0;
-	private static final int SEARCH_REFERENCES = 1;
-	private static final int NO_SEARCH_LIMIT = -1;
 
 	/**
 	 * 
@@ -71,9 +69,17 @@ public class PaperManager {
 		}
 
 		/** Search for cycles */
-		if (!dfs(referee, referee, SEARCH_CITATIONS, NO_SEARCH_LIMIT, referrer)
-				|| !dfs(referee, referee, SEARCH_REFERENCES, NO_SEARCH_LIMIT,
-						referrer)) {
+		DepthFirstSearch<Paper> search = new DepthFirstSearch<Paper>();
+
+		if (!search.dfs(referee, referee, DepthFirstSearch.SEARCH_IN_EDGES,
+				DepthFirstSearch.NO_SEARCH_LIMIT, referrer)) {
+			System.out.println(referrerTitle + " -> " + refereeTitle
+					+ " would create a cycle.");
+			return false;
+		}
+
+		if (!search.dfs(referee, referee, DepthFirstSearch.SEARCH_OUT_EDGES,
+				DepthFirstSearch.NO_SEARCH_LIMIT, referrer)) {
 			System.out.println(referrerTitle + " -> " + refereeTitle
 					+ " would create a cycle.");
 			return false;
@@ -141,13 +147,14 @@ public class PaperManager {
 	 * @param title
 	 * @return
 	 */
-	public HashSet<Stack<Paper>> getAllCitationChains(String title) {
+	public LinkedHashSet<Stack<Paper>> getAllCitationChains(String title) {
 		if (!isExistingPaper(title)) {
 			System.out.println("Paper " + title + " not found.");
 			return null;
 		} else {
-			return this.getPaths(getPaper(title).getTitle(), SEARCH_CITATIONS,
-					NO_SEARCH_LIMIT);
+			return this.getPaths(getPaper(title).getTitle(),
+					DepthFirstSearch.SEARCH_IN_EDGES,
+					DepthFirstSearch.NO_SEARCH_LIMIT);
 		}
 	}
 
@@ -156,29 +163,14 @@ public class PaperManager {
 	 * @param title
 	 * @return
 	 */
-	public HashSet<Stack<Paper>> getAllReferenceChains(String title) {
+	public LinkedHashSet<Stack<Paper>> getAllReferenceChains(String title) {
 		if (!isExistingPaper(title)) {
 			System.out.println("Paper " + title + " not found.");
 			return null;
 		} else {
-			return this.getPaths(getPaper(title).getTitle(), SEARCH_REFERENCES,
-					NO_SEARCH_LIMIT);
-		}
-	}
-
-	/**
-	 * 
-	 * @param title
-	 * @param limit
-	 * @return
-	 */
-	public HashSet<Stack<Paper>> getNCitations(String title, int limit) {
-		if (!isExistingPaper(title)) {
-			System.out.println("Paper " + title + " not found.");
-			return null;
-		} else {
-			return this.getPaths(getPaper(title).getTitle(), SEARCH_CITATIONS,
-					limit);
+			return this.getPaths(getPaper(title).getTitle(),
+					DepthFirstSearch.SEARCH_OUT_EDGES,
+					DepthFirstSearch.NO_SEARCH_LIMIT);
 		}
 	}
 
@@ -188,13 +180,13 @@ public class PaperManager {
 	 * @param limit
 	 * @return
 	 */
-	public HashSet<Stack<Paper>> getNReferences(String title, int limit) {
+	public LinkedHashSet<Stack<Paper>> getNCitations(String title, int limit) {
 		if (!isExistingPaper(title)) {
 			System.out.println("Paper " + title + " not found.");
 			return null;
 		} else {
-			return this.getPaths(getPaper(title).getTitle(), SEARCH_REFERENCES,
-					limit);
+			return this.getPaths(getPaper(title).getTitle(),
+					DepthFirstSearch.SEARCH_IN_EDGES, limit);
 		}
 	}
 
@@ -204,13 +196,29 @@ public class PaperManager {
 	 * @param limit
 	 * @return
 	 */
-	public HashSet<Stack<Paper>> getPaths(String title, int method, int limit) {
+	public LinkedHashSet<Stack<Paper>> getNReferences(String title, int limit) {
+		if (!isExistingPaper(title)) {
+			System.out.println("Paper " + title + " not found.");
+			return null;
+		} else {
+			return this.getPaths(getPaper(title).getTitle(),
+					DepthFirstSearch.SEARCH_OUT_EDGES, limit);
+		}
+	}
+
+	/**
+	 * 
+	 * @param title
+	 * @param limit
+	 * @return
+	 */
+	public LinkedHashSet<Stack<Paper>> getPaths(String title, int method,
+			int limit) {
+
 		Paper front = getPaper(title);
-		chain.clear();
-		chains.clear();
+		DepthFirstSearch<Paper> search = new DepthFirstSearch<Paper>();
 
-		dfs(front, front, method, limit, null);
-		return chains;
+		return search.search(front, front, method, limit, null);
 	}
 
 	/**
@@ -222,41 +230,62 @@ public class PaperManager {
 	 * @param limit
 	 * @return
 	 */
-	private boolean dfs(Paper origin, Paper front, int method, int limit,
-			Paper goal) {
-		chain.add(front);
-
-		HashSet<Paper> children;
-
-		if (method == SEARCH_CITATIONS) {
-			children = front.getCitations();
-		} else {
-			children = front.getReferences();
-		}
-
-		if (children.contains(goal)) {
-			return false;
-		}
-
-		if (children.isEmpty() || limit-- == 0) {
-			chains.add(chain);
-			return true;
-		} else {
-			for (Paper p : children) {
-				if (!chain.contains(front))
-					chain.add(front);
-
-				if (!dfs(origin, p, method, limit, goal))
-					return false;
-
-				chain = new Stack<Paper>();
-
-				if (!chain.contains(origin))
-					chain.add(origin);
-			}
-			return true;
-		}
-	}
+	// private boolean dfs(Paper origin, Paper front, int method, int limit,
+	// Paper goal) {
+	// chain.add(front);
+	//
+	// HashSet<Paper> children;
+	//
+	// if (method == SEARCH_CITATIONS) {
+	// children = front.getCitations();
+	// } else {
+	// children = front.getReferences();
+	// }
+	//
+	// if (children.contains(goal)) {
+	// return false;
+	// }
+	//
+	// if (children.isEmpty() || limit-- == 0) {
+	// chains.add(chain);
+	// return true;
+	// } else {
+	// for (Paper p : children) {
+	// if (!chain.contains(front))
+	// chain.add(front);
+	//
+	// if (!dfs(origin, p, method, limit, goal))
+	// return false;
+	//
+	// if (children.size() > 1) {
+	// chain = chop(chain, front);
+	// }
+	//
+	// if (!chain.contains(origin))
+	// chain.add(origin);
+	// }
+	// return true;
+	// }
+	// }
+	//
+	// /**
+	// *
+	// * @param stack
+	// * @param front
+	// * @return
+	// */
+	// @SuppressWarnings("unchecked")
+	// private Stack<Paper> chop(Stack<Paper> stack, Paper front) {
+	// Stack<Paper> newStack = (Stack<Paper>) stack.clone();
+	// for (int i = 0; i < newStack.size(); i++) {
+	// if (newStack.peek().equals(front)) {
+	// return newStack;
+	// } else {
+	// newStack.pop();
+	// }
+	// }
+	// return newStack;
+	// }
 
 	/**
 	 * 

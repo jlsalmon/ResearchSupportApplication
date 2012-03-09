@@ -1,7 +1,18 @@
 package researchSupport;
 
+/**
+ * Edge.java
+ * 
+ * @author Justin Lewis Salmon
+ * @student_id 10000937
+ * 
+ *             Represents a generic edge in a graph, where the endpoint is the
+ *             other end of the connection. Edges are stored _inside_ Vertices,
+ *             so the vertex in which an Edge is stored is the start of the
+ *             connection.
+ */
 public class Edge {
-	public Vertex<?, ?> endpoint;
+	private Vertex<?, ?> endpoint;
 
 	/**
 	 * @return the endpoint
@@ -11,11 +22,11 @@ public class Edge {
 	}
 
 	/**
-	 * @param endpoint the end to set
+	 * @param endpoint
+	 *            the endpoint to set
 	 */
 	public void setEndpoint(Vertex<?, ?> endpoint) {
 		this.endpoint = endpoint;
 	}
-	
-	
+
 }

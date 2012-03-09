@@ -15,14 +15,14 @@ public class Reference extends Edge {
 	 *            the referee to set
 	 */
 	public void setReferee(Paper referee) {
-		this.endpoint = referee;
+		this.setEndpoint(referee);
 	}
 
 	/**
 	 * @return the referee
 	 */
 	public Paper getReferee() {
-		return (Paper) this.endpoint;
+		return (Paper) this.getEndpoint();
 	}
 
 }

@@ -11,7 +11,7 @@ import java.util.Map;
  */
 public class UndirectedGraph<V extends Vertex<?, ?>> {
 
-	Map<String, V> vertices;
+	private Map<String, V> vertices;
 
 	/**
 	 * 
