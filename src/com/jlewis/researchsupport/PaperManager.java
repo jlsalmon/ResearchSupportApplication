@@ -81,7 +81,7 @@ public class PaperManager {
 			}
 		}
 
-		/** Search for cycles */
+		/** Search for cycles, upwards and downwards */
 		DepthFirstSearch<Paper> search = new DepthFirstSearch<Paper>();
 
 		if (!search.dfs(referee, referee, DepthFirstSearch.SEARCH_IN_EDGES,
