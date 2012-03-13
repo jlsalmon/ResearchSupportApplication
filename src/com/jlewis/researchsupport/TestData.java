@@ -15,7 +15,7 @@ import java.io.InputStream;
  */
 public class TestData {
 
-	final String RESOURCE_LOCATION = "/researchSupport/resources/";
+	final String RESOURCE_LOCATION = "/com/jlewis/researchsupport/resources/";
 
 	/**
 	 * @param rsa

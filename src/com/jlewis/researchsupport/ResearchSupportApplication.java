@@ -137,7 +137,7 @@ public class ResearchSupportApplication {
 		if (citations.isEmpty()) {
 			rsti.print("No citations found for " + title + ".");
 		} else {
-			rsti.print("\nDirect citations for "
+			rsti.print("\n" + citations.size() + " citation(s) found for "
 					+ pm.getPaper(title).getTitle() + ":");
 			rsti.print(citations);
 		}
@@ -154,7 +154,7 @@ public class ResearchSupportApplication {
 		if (references.isEmpty()) {
 			rsti.print("No references found for " + title + ".");
 		} else {
-			rsti.print("\nDirect references for "
+			rsti.print("\n" + references.size() + " reference(s) found for "
 					+ pm.getPaper(title).getTitle() + ":");
 			rsti.print(references);
 		}
@@ -172,7 +172,7 @@ public class ResearchSupportApplication {
 		if (chains == null || chains.isEmpty()) {
 			rsti.print("No citations found for " + title + ".");
 		} else {
-			rsti.print("\nAll citation chains for "
+			rsti.print("\n" + chains.size() + " citation chain(s) found for "
 					+ pm.getPaper(title).getTitle() + ":");
 			rsti.print(chains);
 		}
@@ -190,7 +190,7 @@ public class ResearchSupportApplication {
 		if (chains == null || chains.isEmpty()) {
 			rsti.print("No references found for " + title + ".");
 		} else {
-			rsti.print("\nAll reference chains for "
+			rsti.print("\n" + chains.size() + " reference chain(s) found for "
 					+ pm.getPaper(title).getTitle() + ":");
 			rsti.print(chains);
 		}
@@ -208,8 +208,9 @@ public class ResearchSupportApplication {
 		if (chains == null || chains.isEmpty()) {
 			rsti.print("No citations found for " + title + ".");
 		} else {
-			rsti.print("\nCitation chains to " + n + " levels for "
-					+ pm.getPaper(title).getTitle() + ":");
+			rsti.print("\n" + chains.size() + " citation chain(s) to " + n
+					+ " levels found for " + pm.getPaper(title).getTitle()
+					+ ":");
 			rsti.print(chains);
 		}
 	}
@@ -226,8 +227,9 @@ public class ResearchSupportApplication {
 		if (chains == null || chains.isEmpty()) {
 			rsti.print("No references found for " + title + ".");
 		} else {
-			rsti.print("\nReference chains to " + n + " levels for "
-					+ pm.getPaper(title).getTitle() + ":");
+			rsti.print("\n" + chains.size() + " reference chain(s) to " + n
+					+ " levels found for " + pm.getPaper(title).getTitle()
+					+ ":");
 			rsti.print(chains);
 		}
 	}
