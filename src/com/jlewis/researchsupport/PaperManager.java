@@ -38,7 +38,7 @@ public class PaperManager {
 	 */
 	public boolean addPaper(Paper paper) {
 		if (isExistingPaper(paper.getTitle())) {
-			System.out.println("\nPaper " + paper.getTitle()
+			System.out.println("Paper " + paper.getTitle()
 					+ " already exists.");
 			return false;
 		}

@@ -62,6 +62,7 @@ public class ResearchSupportTextInterface {
 				} else if ((action == 8) || (action == 9)) {
 					levels = inputLevelCountOrRating("level");
 				}
+				System.out.println();
 			}
 		}
 	}
